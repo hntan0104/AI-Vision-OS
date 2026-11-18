@@ -122,7 +122,7 @@ Những lỗi mà ngưỡng sáng tối thông thường bỏ sót. Các tool n�
 ## Ổn định khi chạy sản xuất
 
 - **Không mất Trigger:** Trigger đến khi chưa Ready được giữ lại và xử lý ngay khi Ready.
-- **Không ảnh mờ:** Busy chỉ bật khi đã chụp xong mọi ảnh, bàn không xoay lúc đang chụp.
+- **Không ảnh mờ:** Busy chỉ bật khi đã chụp xong mọi ảnh.
 - **Báo khi ảnh tối:** ảnh có bật đèn mà ra tối (đèn hỏng, mất đèn) được cảnh báo ngay.
 - **Mất camera, PLC biết ngay:** bật Error kèm mã lỗi cho PLC, tự xóa khi camera được cắm lại.
 - **Tự kết nối lại PLC** mỗi 2 giây, xóa trạng thái cũ khi kết nối lại.
