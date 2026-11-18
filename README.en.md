@@ -97,9 +97,10 @@ Also:
 
 ## Contact
 
-For the installer, a trial or a quote:
+For the installer, trial, source code, quote:
 
-> **[ADD CONTACT DETAILS]**
+> Gmail: hntan0104@gmail.com
+> Phone: +84822222979
 
 ---
 
