@@ -341,6 +341,32 @@ footer a{color:var(--muted)}
 .spec.wide dl{grid-template-columns:minmax(120px,22%) 1fr}
 @media (max-width:820px){.specs{grid-template-columns:minmax(0,1fr)}.spec.wide{grid-column:auto}.spec.wide dl{grid-template-columns:minmax(110px,38%) 1fr}}
 
+
+.req{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:8px 24px 20px;overflow-x:auto}
+.req table{width:100%;border-collapse:collapse;font-size:15px;min-width:560px}
+.req th,.req td{text-align:left;padding:13px 12px 13px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.req thead th{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);font-weight:500}
+.req tbody th{color:var(--muted);font-weight:500;width:20%}
+.req td{width:40%}
+.req tbody tr:last-child th,.req tbody tr:last-child td{border-bottom:0}
+.req-note{color:var(--dim);font-size:13.5px;margin:12px 0 0}
+@media (max-width:640px){
+  .req{padding:4px 18px 16px}.req table{min-width:0}
+  .req thead{display:none}
+  .req tr,.req th,.req td{display:block;width:auto!important}
+  .req tbody th{padding:14px 0 4px;border-bottom:0;color:var(--ink);font-weight:600}
+  .req td{padding:2px 0 2px;border-bottom:0;font-size:14.5px;display:grid!important;grid-template-columns:104px 1fr}
+  .req td:last-child{padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .req tbody tr:last-child td:last-child{border-bottom:0}
+  .req td::before{display:inline-block;min-width:96px;color:var(--dim);font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em}
+  .req td:nth-of-type(1)::before{content:"Tối thiểu"}
+  .req td:nth-of-type(2)::before{content:"Khuyến nghị"}
+  html[lang="en"] .req td:nth-of-type(1)::before{content:"Minimum"}
+  html[lang="en"] .req td:nth-of-type(2)::before{content:"Recommended"}
+}
+.compat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:16px}
+.compat .spec p{margin:0;color:var(--muted);font-size:14.5px}
+@media (max-width:820px){.compat{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .js .rv{opacity:1;transform:none}
@@ -683,51 +709,30 @@ footer a{color:var(--muted)}
   <div class="wrap">
     <div class="head rv">
       <span class="kick"><span data-l="vi">Thông số kỹ thuật</span><span data-l="en">Specifications</span></span>
-      <h2><span data-l="vi">Phần cứng và kết nối</span><span data-l="en">Hardware and connectivity</span></h2>
+      <h2><span data-l="vi">Yêu cầu hệ thống</span><span data-l="en">System requirements</span></h2>
       <p><span data-l="vi">Dùng thiết bị có sẵn trong nhà máy. Cần tư vấn cấu hình cho số camera của bạn, hãy liên hệ.</span><span data-l="en">Works with the equipment you already have. For a configuration sized to your cameras, get in touch.</span></p>
     </div>
-    <div class="specs">
-      <div class="spec rv"><h3><svg><use href="#i-shield"/></svg><span data-l="vi">Máy tính Windows</span><span data-l="en">Windows PC</span></h3><dl>
-        <dt><span data-l="vi">Hệ điều hành</span><span data-l="en">OS</span></dt><dd>Windows 10 / 11, 64‑bit</dd>
-        <dt><span data-l="vi">Ổ đĩa trống</span><span data-l="en">Free disk</span></dt><dd>≥ 15 GB</dd>
-        <dt>GPU</dt><dd><span data-l="vi">NVIDIA, driver ≥ 560 (CUDA 12.6), không bắt buộc</span><span data-l="en">NVIDIA, driver ≥ 560 (CUDA 12.6), optional</span></dd>
-        <dt><span data-l="vi">Không có GPU</span><span data-l="en">Without a GPU</span></dt><dd><span data-l="vi">AI tự chạy bằng CPU (chậm hơn)</span><span data-l="en">AI runs on the CPU (slower)</span></dd>
-        <dt>Internet</dt><dd><span data-l="vi">Không cần, trọng số AI có sẵn trong bộ cài</span><span data-l="en">Not needed, AI weights ship in the installer</span></dd>
-        <dt><span data-l="vi">Cài đặt</span><span data-l="en">Install</span></dt><dd><span data-l="vi">Cài được không cần quyền admin; có lệnh tự kiểm tra --selfcheck</span><span data-l="en">No admin rights needed; built‑in --selfcheck</span></dd>
-        <dt><span data-l="vi">Đang chạy trên line</span><span data-l="en">Running on the line</span></dt><dd>Dell Precision 7680 · RTX 2000 Ada Laptop 8 GB</dd>
-      </dl></div>
-      <div class="spec rv d1"><h3><svg><use href="#i-ai"/></svg>NVIDIA Jetson</h3><dl>
-        <dt><span data-l="vi">Thiết bị</span><span data-l="en">Device</span></dt><dd>Jetson Orin</dd>
-        <dt><span data-l="vi">Phần mềm hệ thống</span><span data-l="en">System software</span></dt><dd>JetPack 6.x (L4T R36, CUDA 12.6)</dd>
-        <dt><span data-l="vi">Gói cài</span><span data-l="en">Package</span></dt><dd><span data-l="vi">.tar.gz aarch64, thêm menu không cần root</span><span data-l="en">.tar.gz aarch64, menu entry without root</span></dd>
-        <dt>Recipe</dt><dd><span data-l="vi">Dùng chung với Windows, cả hai chiều</span><span data-l="en">Shared with Windows, both ways</span></dd>
-        <dt>Basler USB3</dt><dd><span data-l="vi">Cần usbcore.usbfs_memory_mb=1000</span><span data-l="en">Needs usbcore.usbfs_memory_mb=1000</span></dd>
-      </dl></div>
-      <div class="spec rv"><h3><svg><use href="#i-cam"/></svg>Camera</h3><dl>
-        <dt>Basler</dt><dd><span data-l="vi">ace USB3 / GigE (pylon); đang chạy acA3800‑14uc 10 MP</span><span data-l="en">ace USB3 / GigE (pylon); in use: acA3800‑14uc 10 MP</span></dd>
-        <dt>FLIR / Teledyne</dt><dd>Spinnaker</dd>
-        <dt>USB / UVC</dt><dd>DirectShow (Windows) · V4L2 (Linux)</dd>
-        <dt><span data-l="vi">Số trạm</span><span data-l="en">Stations</span></dt><dd><span data-l="vi">Tới 4 trạm / máy, mỗi trạm nhiều shot, mỗi shot một chế độ đèn</span><span data-l="en">Up to 4 per PC, several shots each, one lighting mode per shot</span></dd>
-        <dt><span data-l="vi">Độ phân giải</span><span data-l="en">Resolution</span></dt><dd><span data-l="vi">Tới full sensor; giảm bằng binning/ROI phần cứng để chụp nhanh</span><span data-l="en">Up to full sensor; hardware binning/ROI for speed</span></dd>
-        <dt><span data-l="vi">Điều khiển</span><span data-l="en">Controls</span></dt><dd>Exposure · gain · frame rate · pixel format · trigger</dd>
-        <dt><span data-l="vi">Hiệu chuẩn</span><span data-l="en">Calibration</span></dt><dd><span data-l="vi">mm/pixel bắt cạnh sub‑pixel (ví dụ trên line: 0,0718 mm/px)</span><span data-l="en">mm/pixel with sub‑pixel edges (on the line: 0.0718 mm/px)</span></dd>
-      </dl></div>
-      <div class="spec rv d1"><h3><svg><use href="#i-plc"/></svg><span data-l="vi">PLC và tín hiệu</span><span data-l="en">PLC and signals</span></h3><dl>
-        <dt>KEYENCE KV‑8000</dt><dd>Host Link · UDP</dd>
-        <dt>Panasonic FP7</dt><dd>MEWTOCOL · TCP</dd>
-        <dt>Mitsubishi</dt><dd>MC protocol · TCP</dd>
-        <dt>Omron</dt><dd>FINS · UDP</dd>
-        <dt><span data-l="vi">PLC khác</span><span data-l="en">Other PLCs</span></dt><dd>Modbus TCP</dd>
-        <dt>Handshake</dt><dd>Trigger · Ready · Busy · OK · NG · ResultACK · Error</dd>
-        <dt><span data-l="vi">Thanh ghi</span><span data-l="en">Registers</span></dt><dd><span data-l="vi">Mã kết quả, mã lỗi, loại lỗi, thời gian xử lý</span><span data-l="en">Result code, error code, defect type, processing time</span></dd>
-        <dt><span data-l="vi">Đèn</span><span data-l="en">Lighting</span></dt><dd><span data-l="vi">Bật / đổi đèn theo từng shot qua ngõ ra PLC</span><span data-l="en">Switched per shot through PLC outputs</span></dd>
-      </dl></div>
-      <div class="spec wide rv"><h3><svg><use href="#i-chart"/></svg><span data-l="vi">Dữ liệu và truy xuất</span><span data-l="en">Data and traceability</span></h3><dl>
-        <dt><span data-l="vi">Lưu ảnh</span><span data-l="en">Images</span></dt><dd><span data-l="vi">PNG hoặc JPG; theo OK/NG, ngày, ca, trạm; ghi nền không làm chậm chu kỳ</span><span data-l="en">PNG or JPG; by OK/NG, date, shift, station; written in the background</span></dd>
-        <dt><span data-l="vi">Kết quả</span><span data-l="en">Results</span></dt><dd><span data-l="vi">Cơ sở dữ liệu SQLite, xuất CSV; Pareto lỗi, SPC (Cpk)</span><span data-l="en">SQLite database, CSV export; defect Pareto, SPC (Cpk)</span></dd>
-        <dt>Recipe</dt><dd><span data-l="vi">Quản lý phiên bản, Release; nhật ký thao tác; sao lưu và khôi phục</span><span data-l="en">Versioning and release; audit log; backup and restore</span></dd>
-        <dt><span data-l="vi">Log</span><span data-l="en">Logs</span></dt><dd><span data-l="vi">Một dòng thời gian cho mỗi chu kỳ (Trigger, chụp, Busy, kết quả, Ready) và thống kê đường truyền PLC mỗi phút</span><span data-l="en">A timing line per cycle (Trigger, capture, Busy, verdict, Ready) and PLC link statistics every minute</span></dd>
-      </dl></div>
+    <div class="req rv">
+      <table>
+        <thead><tr><th></th><th><span data-l="vi">Tối thiểu</span><span data-l="en">Minimum</span></th><th><span data-l="vi">Khuyến nghị</span><span data-l="en">Recommended</span></th></tr></thead>
+        <tbody>
+          <tr><th><span data-l="vi">Hệ điều hành</span><span data-l="en">OS</span></th><td>Windows 10, 64‑bit</td><td>Windows 11, 64‑bit</td></tr>
+          <tr><th>CPU</th><td><span data-l="vi">4 nhân (Intel Core i5 thế hệ 10 hoặc tương đương)</span><span data-l="en">4 cores (Intel Core i5 10th gen or equivalent)</span></td><td><span data-l="vi">8 nhân trở lên (Core i7 / i9)</span><span data-l="en">8 cores or more (Core i7 / i9)</span></td></tr>
+          <tr><th>RAM</th><td>16 GB</td><td><span data-l="vi">32 GB (huấn luyện AI, chạy 4 trạm)</span><span data-l="en">32 GB (AI training, 4 stations)</span></td></tr>
+          <tr><th>GPU</th><td><span data-l="vi">Không bắt buộc: AI chạy bằng CPU, chậm hơn</span><span data-l="en">Optional: AI runs on the CPU, slower</span></td><td><span data-l="vi">NVIDIA RTX, 8 GB VRAM</span><span data-l="en">NVIDIA RTX, 8 GB VRAM</span></td></tr>
+          <tr><th><span data-l="vi">Ổ đĩa</span><span data-l="en">Storage</span></th><td><span data-l="vi">SSD, trống 15 GB cho phần mềm</span><span data-l="en">SSD, 15 GB free for the software</span></td><td><span data-l="vi">SSD 512 GB trở lên để lưu ảnh</span><span data-l="en">SSD 512 GB or more for images</span></td></tr>
+          <tr><th><span data-l="vi">Cổng camera</span><span data-l="en">Camera ports</span></th><td><span data-l="vi">1 cổng USB3 hoặc GigE cho mỗi camera</span><span data-l="en">One USB3 or GigE port per camera</span></td><td><span data-l="vi">Card USB3 / GigE riêng cho mỗi camera</span><span data-l="en">A dedicated USB3 / GigE card per camera</span></td></tr>
+          <tr><th><span data-l="vi">Kết nối PLC</span><span data-l="en">PLC link</span></th><td>Ethernet</td><td><span data-l="vi">Cổng Ethernet riêng cho PLC</span><span data-l="en">A dedicated Ethernet port for the PLC</span></td></tr>
+          <tr><th>NVIDIA Jetson</th><td><span data-l="vi">Jetson Orin, JetPack 6</span><span data-l="en">Jetson Orin, JetPack 6</span></td><td><span data-l="vi">Bản 16 GB RAM trở lên</span><span data-l="en">16 GB RAM model or larger</span></td></tr>
+        </tbody>
+      </table>
+      <p class="req-note"><span data-l="vi">Không cần internet: trọng số AI có sẵn trong bộ cài. Cấu hình phù hợp phụ thuộc số camera, độ phân giải và recipe; liên hệ để được tư vấn.</span><span data-l="en">No internet needed: AI weights ship in the installer. The right configuration depends on camera count, resolution and recipe; get in touch for advice.</span></p>
+    </div>
+    <div class="compat">
+      <div class="spec rv"><h3><svg><use href="#i-cam"/></svg><span data-l="vi">Camera tương thích</span><span data-l="en">Compatible cameras</span></h3>
+        <p><span data-l="vi">Camera công nghiệp USB3 Vision / GigE Vision (Basler, FLIR / Teledyne) và camera USB / UVC. Tới 4 trạm trên một máy, mỗi trạm nhiều shot với nhiều chế độ đèn.</span><span data-l="en">Industrial USB3 Vision / GigE Vision cameras (Basler, FLIR / Teledyne) and USB / UVC cameras. Up to 4 stations per PC, several shots each with different lighting.</span></p></div>
+      <div class="spec rv d1"><h3><svg><use href="#i-plc"/></svg><span data-l="vi">PLC tương thích</span><span data-l="en">Compatible PLCs</span></h3>
+        <p><span data-l="vi">KEYENCE, Mitsubishi, Omron, Panasonic qua Ethernet, và mọi PLC hỗ trợ Modbus TCP. Bật đèn theo từng shot qua ngõ ra PLC.</span><span data-l="en">KEYENCE, Mitsubishi, Omron and Panasonic over Ethernet, plus any PLC with Modbus TCP. Lighting switched per shot through PLC outputs.</span></p></div>
     </div>
   </div>
 </section>

@@ -130,46 +130,23 @@ Defects a plain brightness threshold misses. These tools were built on real line
 - **Per‑cycle log:** a timing line per cycle (Trigger, capture, Busy, verdict, Ready) and PLC link statistics every minute.
 - **Over 3,500 automated tests** covering tools, PLCs, cameras and AI.
 
-## Specifications
+## System requirements
 
-**Windows PC**
+| | Minimum | Recommended |
+|---|---|---|
+| OS | Windows 10, 64‑bit | Windows 11, 64‑bit |
+| CPU | 4 cores (Intel Core i5 10th gen or equivalent) | 8 cores or more (Core i7 / i9) |
+| RAM | 16 GB | 32 GB (AI training, 4 stations) |
+| GPU | Optional: AI runs on the CPU, slower | NVIDIA RTX, 8 GB VRAM |
+| Storage | SSD, 15 GB free for the software | SSD 512 GB or more for images |
+| Camera ports | One USB3 or GigE port per camera | A dedicated USB3 / GigE card per camera |
+| PLC link | Ethernet | A dedicated Ethernet port for the PLC |
+| NVIDIA Jetson | Jetson Orin, JetPack 6 | 16 GB RAM model or larger |
 
-| | |
-|---|---|
-| OS | Windows 10 / 11, 64‑bit |
-| Free disk | ≥ 15 GB |
-| GPU | NVIDIA, driver ≥ 560 (CUDA 12.6), optional; without one, AI runs on the CPU (slower) |
-| Internet | Not needed: AI weights ship in the installer |
-| Install | No admin rights needed; built‑in `--selfcheck` |
-| Running on the line | Dell Precision 7680 · RTX 2000 Ada Laptop 8 GB |
+No internet needed: AI weights ship in the installer. The right configuration depends on camera count, resolution and recipe; get in touch for advice.
 
-**NVIDIA Jetson:** Jetson Orin, JetPack 6.x (L4T R36, CUDA 12.6). `.tar.gz` aarch64 package, menu entry without root. Recipes are shared with Windows, both ways. Basler USB3 cameras need `usbcore.usbfs_memory_mb=1000`.
-
-**Cameras**
-
-| | |
-|---|---|
-| Basler | ace USB3 / GigE (pylon); in use: acA3800‑14uc 10 MP |
-| FLIR / Teledyne | Spinnaker |
-| USB / UVC | DirectShow (Windows) · V4L2 (Linux) |
-| Stations | Up to 4 per PC; several shots each, one lighting mode per shot |
-| Resolution | Up to full sensor; hardware binning/ROI for speed |
-| Calibration | mm/pixel with sub‑pixel edges (on the line: 0.0718 mm/px); line, servo, stereo 3D |
-
-**PLC and signals**
-
-| | |
-|---|---|
-| KEYENCE KV‑8000 | Host Link · UDP |
-| Panasonic FP7 | MEWTOCOL · TCP |
-| Mitsubishi | MC protocol · TCP |
-| Omron | FINS · UDP |
-| Other PLCs | Modbus TCP |
-| Handshake | Trigger · Ready · Busy · OK · NG · ResultACK · Error |
-| Registers | Result code, error code, defect type, processing time |
-| Lighting | Switched per shot through PLC outputs |
-
-**Data:** images saved as PNG or JPG by OK/NG, date, shift, station; SQLite database, CSV export; defect Pareto, SPC (Cpk); recipe versioning and release; audit log; backup and restore.
+- **Compatible cameras:** industrial USB3 Vision / GigE Vision cameras (Basler, FLIR / Teledyne) and USB / UVC cameras. Up to 4 stations per PC, several shots each with different lighting.
+- **Compatible PLCs:** KEYENCE, Mitsubishi, Omron and Panasonic over Ethernet, plus any PLC with Modbus TCP. Lighting switched per shot through PLC outputs.
 
 ## Licensing and activation
 

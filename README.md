@@ -130,46 +130,23 @@ Những lỗi mà ngưỡng sáng tối thông thường bỏ sót. Các tool n�
 - **Log từng chu kỳ:** một dòng thời gian cho mỗi chu kỳ (Trigger, chụp, Busy, kết quả, Ready) và thống kê đường truyền PLC mỗi phút.
 - **Hơn 3.500 bài kiểm thử tự động** cho tool, PLC, camera và AI.
 
-## Thông số kỹ thuật
+## Yêu cầu hệ thống
 
-**Máy tính Windows**
+| | Tối thiểu | Khuyến nghị |
+|---|---|---|
+| Hệ điều hành | Windows 10, 64‑bit | Windows 11, 64‑bit |
+| CPU | 4 nhân (Intel Core i5 thế hệ 10 hoặc tương đương) | 8 nhân trở lên (Core i7 / i9) |
+| RAM | 16 GB | 32 GB (huấn luyện AI, chạy 4 trạm) |
+| GPU | Không bắt buộc: AI chạy bằng CPU, chậm hơn | NVIDIA RTX, 8 GB VRAM |
+| Ổ đĩa | SSD, trống 15 GB cho phần mềm | SSD 512 GB trở lên để lưu ảnh |
+| Cổng camera | 1 cổng USB3 hoặc GigE cho mỗi camera | Card USB3 / GigE riêng cho mỗi camera |
+| Kết nối PLC | Ethernet | Cổng Ethernet riêng cho PLC |
+| NVIDIA Jetson | Jetson Orin, JetPack 6 | Bản 16 GB RAM trở lên |
 
-| | |
-|---|---|
-| Hệ điều hành | Windows 10 / 11, 64‑bit |
-| Ổ đĩa trống | ≥ 15 GB |
-| GPU | NVIDIA, driver ≥ 560 (CUDA 12.6), không bắt buộc; không có GPU thì AI chạy bằng CPU (chậm hơn) |
-| Internet | Không cần: trọng số AI có sẵn trong bộ cài |
-| Cài đặt | Không cần quyền admin; có lệnh tự kiểm tra `--selfcheck` |
-| Đang chạy trên line | Dell Precision 7680 · RTX 2000 Ada Laptop 8 GB |
+Không cần internet: trọng số AI có sẵn trong bộ cài. Cấu hình phù hợp phụ thuộc số camera, độ phân giải và recipe; liên hệ để được tư vấn.
 
-**NVIDIA Jetson:** Jetson Orin, JetPack 6.x (L4T R36, CUDA 12.6). Gói `.tar.gz` aarch64, thêm menu không cần root. Recipe dùng chung với Windows, cả hai chiều. Camera Basler USB3 cần `usbcore.usbfs_memory_mb=1000`.
-
-**Camera**
-
-| | |
-|---|---|
-| Basler | ace USB3 / GigE (pylon); đang chạy acA3800‑14uc 10 MP |
-| FLIR / Teledyne | Spinnaker |
-| USB / UVC | DirectShow (Windows) · V4L2 (Linux) |
-| Số trạm | Tới 4 trạm / máy; mỗi trạm nhiều shot, mỗi shot một chế độ đèn |
-| Độ phân giải | Tới full sensor; giảm bằng binning/ROI phần cứng để chụp nhanh |
-| Hiệu chuẩn | mm/pixel bắt cạnh sub‑pixel (ví dụ trên line: 0,0718 mm/px); theo đường, servo, stereo 3D |
-
-**PLC và tín hiệu**
-
-| | |
-|---|---|
-| KEYENCE KV‑8000 | Host Link · UDP |
-| Panasonic FP7 | MEWTOCOL · TCP |
-| Mitsubishi | MC protocol · TCP |
-| Omron | FINS · UDP |
-| PLC khác | Modbus TCP |
-| Handshake | Trigger · Ready · Busy · OK · NG · ResultACK · Error |
-| Thanh ghi | Mã kết quả, mã lỗi, loại lỗi, thời gian xử lý |
-| Đèn | Bật / đổi đèn theo từng shot qua ngõ ra PLC |
-
-**Dữ liệu:** lưu ảnh PNG hoặc JPG theo OK/NG, ngày, ca, trạm; cơ sở dữ liệu SQLite, xuất CSV; Pareto lỗi, SPC (Cpk); recipe có phiên bản và Release; nhật ký thao tác; sao lưu và khôi phục.
+- **Camera tương thích:** camera công nghiệp USB3 Vision / GigE Vision (Basler, FLIR / Teledyne) và camera USB / UVC. Tới 4 trạm trên một máy, mỗi trạm nhiều shot với nhiều chế độ đèn.
+- **PLC tương thích:** KEYENCE, Mitsubishi, Omron, Panasonic qua Ethernet, và mọi PLC hỗ trợ Modbus TCP. Bật đèn theo từng shot qua ngõ ra PLC.
 
 ## Bản quyền và kích hoạt
 
