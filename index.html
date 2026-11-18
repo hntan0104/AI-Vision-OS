@@ -6,6 +6,8 @@
 <title>AI Vision OS: phần mềm kiểm tra ngoại quan (machine vision) cho nhà máy</title>
 <meta name="description" content="AI Vision OS là phần mềm machine vision kiểm tra ngoại quan cho dây chuyền sản xuất: kéo-thả quy trình không cần code, 126 tool đo lường, tìm lỗi, OCR, AI YOLO, kết nối camera Basler/FLIR và PLC KEYENCE, Mitsubishi, Omron, Panasonic. Chạy trên Windows và NVIDIA Jetson.">
 <meta name="keywords" content="machine vision, phần mềm thị giác máy, kiểm tra ngoại quan, AOI, phát hiện lỗi sản phẩm, defect detection, visual inspection, YOLO, PLC, KEYENCE, Basler, NVIDIA Jetson, OCR, smart factory, Việt Nam">
+<meta name="theme-color" content="#070b12">
+<meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://hntan0104.github.io/AI-Vision-OS/">
 <link rel="icon" href="images/logo.png">
 <meta property="og:type" content="website">
@@ -31,247 +33,655 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f6f8fb; --surface:#ffffff; --ink:#111821; --muted:#5a6878; --line:#e3e8ef;
-  --accent:#2f6fb5; --accent-ink:#ffffff; --green:#5f9e00; --hero:#111821; --hero-ink:#eef3f8; --hero-muted:#9fb0c2;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0e141b; --surface:#151d26; --ink:#e8eef4; --muted:#93a3b4; --line:#243140;
-    --accent:#5aa2ef; --accent-ink:#0b1118; --green:#8bc53f; --hero:#0a0f15; --hero-ink:#eef3f8; --hero-muted:#93a3b4;
-  }
+  --bg:#070b12; --bg2:#0a101a; --surface:#0e1622; --surface2:#121c2b;
+  --line:rgba(148,163,184,.14); --line2:rgba(148,163,184,.24);
+  --ink:#e8eef6; --muted:#8d9db2; --dim:#5f6f84;
+  --cyan:#38bdf8; --blue:#3b82f6; --violet:#8b5cf6; --ok:#22c55e; --ng:#ef4444; --amber:#f59e0b;
+  --grad:linear-gradient(100deg,#38bdf8 0%,#6d8cff 50%,#a78bfa 100%);
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+  --r:14px;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
 img{max-width:100%;height:auto;display:block}
-a{color:var(--accent)}
-.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+a{color:var(--cyan);text-decoration:none}
+button{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 html:not([lang="en"]) [data-l="en"]{display:none!important}
 html[lang="en"] [data-l="vi"]{display:none!important}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mono{font-family:var(--mono)}
+
+/* reveal */
+.js .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+.js .rv.d1{transition-delay:.08s}.js .rv.d2{transition-delay:.16s}.js .rv.d3{transition-delay:.24s}
 
 /* nav */
-.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--hero) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
-.nav .wrap{display:flex;align-items:center;gap:16px;height:60px}
-.brand{display:flex;align-items:center;gap:10px;color:var(--hero-ink);text-decoration:none;font-weight:700}
-.brand img{width:32px;height:32px;border-radius:8px}
-.nav nav{margin-left:auto;display:flex;gap:4px;align-items:center}
-.nav nav a{color:var(--hero-muted);text-decoration:none;font-size:14px;padding:6px 10px;border-radius:6px}
-.nav nav a:hover{color:var(--hero-ink)}
-.lang{background:transparent;border:1px solid rgba(255,255,255,.2);color:var(--hero-ink);border-radius:6px;padding:5px 10px;font:inherit;font-size:13px;cursor:pointer;margin-left:6px}
-@media (max-width:720px){.nav nav a.hide-sm{display:none}}
+.nav{position:fixed;inset:0 0 auto;z-index:50;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(7,11,18,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;height:64px;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);font-weight:700;letter-spacing:.01em}
+.brand img{width:34px;height:34px;border-radius:9px}
+.nav nav{margin-left:auto;display:flex;align-items:center;gap:2px}
+.nav nav a{color:var(--muted);font-size:14px;padding:7px 11px;border-radius:8px;transition:color .2s}
+.nav nav a:hover{color:var(--ink)}
+.nav .cta-sm{background:var(--ink);color:#0a0f17;font-weight:600;margin-left:6px}
+.nav .cta-sm:hover{color:#0a0f17;opacity:.9}
+.lang{background:transparent;border:1px solid var(--line2);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;margin-left:6px;color:var(--muted)}
+.lang:hover{color:var(--ink)}
+@media (max-width:860px){.nav nav a.hm{display:none}}
 
 /* hero */
-.hero{background:var(--hero);color:var(--hero-ink);padding:64px 0 0;overflow:hidden}
-.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.15;margin:0 0 16px;font-weight:800;letter-spacing:-.01em;max-width:820px}
-.hero .lead{font-size:clamp(16px,2vw,19px);color:var(--hero-muted);max-width:720px;margin:0 0 28px}
-.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:44px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px}
-.btn.primary{background:var(--accent);color:var(--accent-ink)}
-.btn.ghost{border:1px solid rgba(255,255,255,.25);color:var(--hero-ink)}
-.flow{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;color:var(--hero-muted);display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-bottom:36px}
-.flow span{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:4px 10px;border-radius:999px;color:var(--hero-ink)}
-.flow i{font-style:normal;opacity:.6}
-.hero-shot{border-radius:12px 12px 0 0;box-shadow:0 -10px 60px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.08);border-bottom:0}
+.hero{position:relative;padding:136px 0 40px;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;
+  background:
+   radial-gradient(900px 500px at 78% 18%,rgba(59,130,246,.22),transparent 60%),
+   radial-gradient(700px 420px at 10% 0%,rgba(56,189,248,.14),transparent 60%),
+   radial-gradient(600px 400px at 60% 90%,rgba(139,92,246,.12),transparent 60%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:56px 56px;mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000 30%,transparent 75%)}
+.hero-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:rgba(14,22,34,.7);padding:6px 12px 6px 8px;border-radius:999px;font-size:13px;color:var(--muted)}
+.eyebrow b{background:rgba(34,197,94,.15);color:#4ade80;font-weight:600;padding:2px 8px;border-radius:999px;font-size:12px}
+.hero h1{text-wrap:balance;font-size:clamp(34px,4.6vw,56px);line-height:1.08;letter-spacing:-.025em;margin:20px 0 18px;font-weight:800}
+.hero .lead{font-size:clamp(16px,1.6vw,19px);color:var(--muted);margin:0 0 30px;max-width:560px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:11px;font-weight:600;font-size:15px;transition:transform .2s,box-shadow .2s,background .2s}
+.btn svg{width:18px;height:18px}
+.btn.pri{background:var(--grad);color:#06101c;box-shadow:0 8px 30px rgba(59,130,246,.35)}
+.btn.pri:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(59,130,246,.45)}
+.btn.sec{border:1px solid var(--line2);color:var(--ink);background:rgba(14,22,34,.6)}
+.btn.sec:hover{background:var(--surface2)}
+.ticks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:26px;color:var(--muted);font-size:14px}
+.ticks span{display:inline-flex;align-items:center;gap:7px}
+.ticks svg{width:16px;height:16px;color:var(--ok)}
+
+.stage{position:relative;perspective:1600px}
+.frame{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line2);background:#0b111b;
+  box-shadow:0 40px 100px -20px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.03),0 0 80px -10px rgba(59,130,246,.35);
+  transform:rotateY(-9deg) rotateX(4deg);transform-origin:left center;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.stage:hover .frame{transform:rotateY(-3deg) rotateX(1deg)}
+.frame .bar{display:flex;gap:6px;padding:9px 12px;border-bottom:1px solid var(--line);background:#0d1520}
+.frame .bar i{width:10px;height:10px;border-radius:50%;background:#2a3544}
+.frame .scan{position:absolute;left:0;right:0;top:0;height:30%;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(56,189,248,.12) 70%,rgba(56,189,248,.5) 100%);border-bottom:1px solid rgba(56,189,248,.7);
+  animation:scan 4.2s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(380%)}}
+.chip{position:absolute;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;
+  background:rgba(13,20,32,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line2);
+  box-shadow:0 18px 40px -10px rgba(0,0,0,.7);font-size:13px;white-space:nowrap;animation:float 6s ease-in-out infinite}
+.chip small{display:block;color:var(--muted);font-size:11.5px;line-height:1.3}
+.chip b{display:block;line-height:1.3}
+.chip .dot{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:800;font-size:11px;font-family:var(--mono)}
+.chip.ok .dot{background:rgba(34,197,94,.16);color:#4ade80;box-shadow:inset 0 0 0 1px rgba(34,197,94,.4)}
+.chip.ng .dot{background:rgba(239,68,68,.16);color:#f87171;box-shadow:inset 0 0 0 1px rgba(239,68,68,.4)}
+.chip.ai .dot{background:rgba(139,92,246,.18);color:#c4b5fd;box-shadow:inset 0 0 0 1px rgba(139,92,246,.45)}
+.c1{left:-26px;top:16%;animation-delay:-1s}
+.c2{right:-14px;top:44%;animation-delay:-3s}
+.c3{left:12%;bottom:-22px;animation-delay:-4.5s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@media (max-width:980px){.hero-grid{grid-template-columns:1fr}.frame{transform:none}.stage:hover .frame{transform:none}.c1{left:8px}.c2{right:8px}}
+@media (max-width:560px){.chip{font-size:12px;padding:8px 10px}.chip .dot{width:26px;height:26px}.c3{display:none}.c1{top:-14px}.c2{top:auto;bottom:-16px}}
+
+/* marquee */
+.strip{border-block:1px solid var(--line);background:var(--bg2);margin-top:72px;overflow:hidden;position:relative}
+.strip::before,.strip::after{content:"";position:absolute;top:0;bottom:0;width:120px;z-index:1;pointer-events:none}
+.strip::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent)}
+.strip::after{right:0;background:linear-gradient(-90deg,var(--bg2),transparent)}
+.track{display:flex;gap:48px;width:max-content;padding:20px 0;animation:mq 38s linear infinite}
+.track span{color:var(--dim);font-weight:700;font-size:15px;letter-spacing:.04em;white-space:nowrap;display:flex;align-items:center;gap:10px}
+.track span::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--line2)}
+@keyframes mq{to{transform:translateX(-50%)}}
 
 /* sections */
-section{padding:72px 0}
-.kicker{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 8px}
-h2{font-size:clamp(24px,3.4vw,34px);line-height:1.2;margin:0 0 12px;font-weight:800}
-.sub{color:var(--muted);max-width:720px;margin:0 0 36px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:-1px}
-.stats div{background:var(--surface);padding:22px 20px}
-.stats b{display:block;font-size:30px;font-weight:800;line-height:1.1}
-.stats span{color:var(--muted);font-size:14px}
-@media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+section{padding:110px 0;position:relative}
+.head{max-width:760px;margin:0 auto 56px;text-align:center}
+.kick{display:inline-block;font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px}
+h2{text-wrap:balance;font-size:clamp(28px,3.8vw,44px);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:800}
+.head p{color:var(--muted);font-size:17px;margin:0}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
-.card h3{margin:0 0 6px;font-size:17px}
-.card p{margin:0;color:var(--muted);font-size:15px}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:64px}
+.stat{padding:24px;border-radius:var(--r);background:linear-gradient(180deg,var(--surface),rgba(14,22,34,.4));border:1px solid var(--line)}
+.stat b{display:block;font-size:44px;line-height:1;font-weight:800;letter-spacing:-.03em}
+.stat span{display:block;color:var(--muted);font-size:14px;margin-top:8px}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.stat b{font-size:36px}}
 
-.split{display:grid;grid-template-columns:1fr 1.25fr;gap:40px;align-items:center;padding:28px 0}
-.split.rev{grid-template-columns:1.25fr 1fr}
-.split.rev .txt{order:2}
-.split img{border-radius:10px;border:1px solid var(--line);box-shadow:0 12px 40px rgba(17,24,33,.12)}
-.split h3{font-size:22px;margin:0 0 10px}
-.split ul{margin:0;padding-left:18px;color:var(--muted)}
-.split li{margin:4px 0}
-@media (max-width:820px){.split,.split.rev{grid-template-columns:1fr;gap:20px}.split.rev .txt{order:0}}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:relative}
+.steps::before{content:"";position:absolute;top:31px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--line2) 10%,var(--line2) 90%,transparent)}
+.step{position:relative;text-align:center;padding:0 8px}
+.step .ic{width:64px;height:64px;margin:0 auto 18px;border-radius:18px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line2);position:relative;z-index:1;box-shadow:0 0 0 8px var(--bg)}
+.step .ic svg{width:28px;height:28px;color:var(--cyan)}
+.step .n{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.step h3{font-size:18px;margin:4px 0 8px}
+.step p{color:var(--muted);font-size:14.5px;margin:0}
+@media (max-width:860px){.steps{grid-template-columns:1fr 1fr;gap:36px 20px}.steps::before{display:none}}
+@media (max-width:480px){.steps{grid-template-columns:1fr}}
 
-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}
-th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
-th{width:30%;font-weight:700;white-space:nowrap}
-td{color:var(--muted)}
-tr:last-child th,tr:last-child td{border-bottom:0}
-@media (max-width:620px){th,td{display:block;width:auto}th{border-bottom:0;padding-bottom:2px}td{padding-top:0}}
+/* showcase */
+.show{display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:start}
+.tabs{display:flex;flex-direction:column;gap:6px}
+.tab{position:relative;text-align:left;background:transparent;border:1px solid transparent;border-radius:12px;padding:14px 16px;cursor:pointer;transition:background .25s,border-color .25s;overflow:hidden}
+.tab b{display:block;font-size:15.5px;color:var(--muted);transition:color .25s}
+.tab>span{display:block;font-size:13.5px;color:var(--dim);max-height:0;opacity:0;transition:max-height .4s,opacity .4s,margin .4s}
+.tab.on{background:var(--surface);border-color:var(--line2)}
+.tab.on b{color:var(--ink)}
+.tab.on>span{max-height:90px;opacity:1;margin-top:4px;color:var(--muted)}
+.tab .pg{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--grad)}
+.tab.on .pg{animation:pg var(--dur,6.5s) linear forwards}
+.show.paused .tab.on .pg{animation-play-state:paused}
+@keyframes pg{to{width:100%}}
+.viewer{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line2);background:#0b111b;aspect-ratio:1300/770;box-shadow:0 30px 80px -30px rgba(0,0,0,.8),0 0 60px -20px rgba(59,130,246,.3)}
+.viewer .bar{display:flex;gap:6px;padding:9px 12px;border-bottom:1px solid var(--line);background:#0d1520}
+.viewer .bar i{width:10px;height:10px;border-radius:50%;background:#2a3544}
+.viewer img{position:absolute;left:0;right:0;top:29px;width:100%;opacity:0;transform:scale(1.015);transition:opacity .55s ease,transform .8s ease}
+.viewer img.on{opacity:1;transform:none}
+@media (max-width:900px){.show{grid-template-columns:1fr}.tabs{flex-direction:row;overflow-x:auto;scrollbar-width:none;gap:6px;padding-bottom:4px}.tabs::-webkit-scrollbar{display:none}.tab{flex:0 0 auto}.tab>span{display:none}}
 
-.contact{background:var(--hero);color:var(--hero-ink);border-radius:16px;padding:44px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center}
-.contact h2{color:var(--hero-ink)}
-.contact p{color:var(--hero-muted);margin:0}
-.contact .links{display:flex;flex-direction:column;gap:10px}
-.contact .links a{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:14px 18px;border-radius:10px;color:var(--hero-ink);text-decoration:none;font-weight:600;overflow-wrap:anywhere}
-.contact .links small{display:block;color:var(--hero-muted);font-weight:400}
-@media (max-width:760px){.contact{grid-template-columns:1fr;padding:28px 20px}}
-footer{padding:36px 0 48px;color:var(--muted);font-size:14px;text-align:center}
+/* results */
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.res{border-radius:var(--r);overflow:hidden;background:var(--surface);border:1px solid var(--line);transition:transform .3s,border-color .3s}
+.res:hover{transform:translateY(-4px);border-color:var(--line2)}
+.res .img{position:relative;aspect-ratio:16/10;overflow:hidden;background:#000}
+.res .img img{width:100%;height:100%;object-fit:cover;object-position:55% 40%;transform:scale(1.35);transform-origin:55% 40%}
+.res .tag{position:absolute;top:12px;left:12px;font-family:var(--mono);font-size:12px;font-weight:700;padding:4px 10px;border-radius:7px}
+.res .tag.ng{background:rgba(239,68,68,.9);color:#fff}
+.res .tag.ok{background:rgba(34,197,94,.9);color:#04230f}
+.res .body{padding:18px 20px 20px}
+.res h3{margin:0 0 6px;font-size:17px}
+.res p{margin:0;color:var(--muted);font-size:14.5px}
+.res .meta{display:flex;gap:14px;margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+@media (max-width:900px){.results{grid-template-columns:1fr}}
+
+/* bento features */
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{position:relative;border-radius:var(--r);padding:26px;background:linear-gradient(180deg,var(--surface),rgba(14,22,34,.55));border:1px solid var(--line);overflow:hidden;transition:border-color .3s}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(400px 200px at var(--mx,50%) var(--my,0%),rgba(56,189,248,.10),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover{border-color:var(--line2)}
+.card:hover::before{opacity:1}
+.card .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;margin-bottom:18px;background:rgba(56,189,248,.1);color:var(--cyan);box-shadow:inset 0 0 0 1px rgba(56,189,248,.25)}
+.card .ic svg{width:22px;height:22px}
+.card h3{margin:0 0 8px;font-size:18px}
+.card p{margin:0;color:var(--muted);font-size:14.5px}
+.card.wide{grid-column:span 2;grid-row:span 2}
+.card.wide img{margin-top:20px;border-radius:10px;border:1px solid var(--line)}
+.card.v .ic{background:rgba(139,92,246,.12);color:#c4b5fd;box-shadow:inset 0 0 0 1px rgba(139,92,246,.3)}
+.card.g .ic{background:rgba(34,197,94,.1);color:#4ade80;box-shadow:inset 0 0 0 1px rgba(34,197,94,.28)}
+.card.a .ic{background:rgba(245,158,11,.1);color:#fbbf24;box-shadow:inset 0 0 0 1px rgba(245,158,11,.28)}
+@media (max-width:980px){.bento{grid-template-columns:1fr 1fr}.card.wide{grid-row:auto}}
+@media (max-width:600px){.bento{grid-template-columns:1fr}.card.wide{grid-column:auto}}
+
+/* tools */
+.filters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:28px}
+.f{border:1px solid var(--line2);background:transparent;border-radius:999px;padding:8px 15px;font-size:14px;color:var(--muted);cursor:pointer;transition:all .2s}
+.f:hover{color:var(--ink)}
+.f.on{background:var(--ink);color:#0a0f17;border-color:var(--ink);font-weight:600}
+.f i{font-style:normal;font-family:var(--mono);font-size:12px;opacity:.6;margin-left:6px}
+.pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:120px;max-width:980px;margin:0 auto}
+.pill{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;font-size:14px;animation:pop .35s ease both}
+.pill em{font-style:normal;color:var(--dim);font-size:12px;margin-left:8px}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+
+/* industries */
+.inds{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.ind{padding:22px 24px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface)}
+.ind h3{margin:0 0 6px;font-size:17px;display:flex;align-items:center;gap:10px}
+.ind h3 .ii{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;background:rgba(56,189,248,.1);color:var(--cyan);box-shadow:inset 0 0 0 1px rgba(56,189,248,.25)}
+.ind h3 .ii svg{width:18px;height:18px}
+.ind p{margin:0;color:var(--muted);font-size:14.5px}
+@media (max-width:900px){.inds{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.inds{grid-template-columns:1fr}}
+
+/* hardware */
+.hw{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.hw .card ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.hw .card li{display:flex;justify-content:space-between;gap:12px;font-size:14.5px;border-top:1px solid var(--line);padding-top:8px}
+.hw .card li span{color:var(--dim);font-family:var(--mono);font-size:12.5px;text-align:right}
+@media (max-width:900px){.hw{grid-template-columns:1fr}}
+
+/* why */
+.why{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.why div{background:var(--bg2);padding:28px}
+.why h3{margin:0 0 6px;font-size:17px;display:flex;gap:10px;align-items:center}
+.why h3 svg{width:20px;height:20px;color:var(--ok);flex:none}
+.why p{margin:0;color:var(--muted);font-size:14.5px}
+@media (max-width:900px){.why{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.why{grid-template-columns:1fr}}
+
+/* faq */
+.faq{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+details{border:1px solid var(--line);border-radius:12px;background:var(--surface);transition:border-color .2s}
+details[open]{border-color:var(--line2)}
+summary{cursor:pointer;list-style:none;padding:18px 22px;font-weight:600;display:flex;justify-content:space-between;gap:16px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:22px;font-weight:400;color:var(--muted);transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin:0;padding:0 22px 20px;color:var(--muted)}
+
+/* cta */
+.cta{position:relative;border-radius:22px;padding:64px 48px;overflow:hidden;border:1px solid var(--line2);
+  background:radial-gradient(600px 300px at 15% 0%,rgba(56,189,248,.22),transparent 60%),radial-gradient(600px 300px at 90% 100%,rgba(139,92,246,.22),transparent 60%),var(--surface);
+  display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center}
+.cta h2{margin-bottom:12px}
+.cta p{color:var(--muted);margin:0;font-size:17px}
+.contacts{display:flex;flex-direction:column;gap:12px}
+.contacts a{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:14px;background:rgba(7,11,18,.55);border:1px solid var(--line2);color:var(--ink);transition:transform .2s,border-color .2s;overflow-wrap:anywhere}
+.contacts a:hover{transform:translateX(4px);border-color:var(--cyan)}
+.contacts .ic{width:42px;height:42px;flex:none;border-radius:11px;display:grid;place-items:center;background:var(--grad);color:#06101c}
+.contacts .ic svg{width:20px;height:20px}
+.contacts b{display:block;font-size:16px}
+.contacts small{color:var(--muted)}
+@media (max-width:860px){.cta{grid-template-columns:1fr;padding:40px 22px}}
+
+footer{border-top:1px solid var(--line);padding:32px 0 40px;color:var(--dim);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+footer a{color:var(--muted)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js .rv{opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
 
-<header class="nav">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="i-flow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="3" width="6" height="6" rx="1.5"/><rect x="9" y="15" width="6" height="6" rx="1.5"/><path d="M6 9v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9M12 13v2"/></symbol>
+    <symbol id="i-ai" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></symbol>
+    <symbol id="i-plc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h2M7 12h2M7 15h2M13 9h4M13 12h4M13 15h4"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h16"/><path d="M8 16v-4M12 16V8M16 16v-6M20 16v-9"/></symbol>
+    <symbol id="i-count" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M7 7l-3 5 3 5M17 7l3 5-3 5"/><circle cx="12" cy="12" r="2.2"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+    <symbol id="i-ruler" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-gh" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 2.9.8.1-.7.4-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav" id="nav">
   <div class="wrap">
-    <a class="brand" href="#"><img src="images/logo.png" alt="">AI Vision OS</a>
+    <a class="brand" href="#top"><img src="images/logo.png" alt="">AI Vision OS</a>
     <nav>
-      <a class="hide-sm" href="#features"><span data-l="vi">Tính năng</span><span data-l="en">Features</span></a>
-      <a class="hide-sm" href="#tools"><span data-l="vi">Thư viện tool</span><span data-l="en">Tools</span></a>
-      <a class="hide-sm" href="#hardware"><span data-l="vi">Phần cứng</span><span data-l="en">Hardware</span></a>
-      <a href="#contact"><span data-l="vi">Liên hệ</span><span data-l="en">Contact</span></a>
+      <a class="hm" href="#how"><span data-l="vi">Cách hoạt động</span><span data-l="en">How it works</span></a>
+      <a class="hm" href="#features"><span data-l="vi">Tính năng</span><span data-l="en">Features</span></a>
+      <a class="hm" href="#tools"><span data-l="vi">Thư viện tool</span><span data-l="en">Tools</span></a>
+      <a class="hm" href="#faq">FAQ</a>
+      <a class="cta-sm" href="#contact"><span data-l="vi">Liên hệ</span><span data-l="en">Contact</span></a>
       <button class="lang" id="lang" type="button" aria-label="Language">EN</button>
     </nav>
   </div>
 </header>
 
-<div class="hero">
+<div class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow rv"><b>NEW</b><span data-l="vi">Windows 10/11 · NVIDIA Jetson · GPU CUDA</span><span data-l="en">Windows 10/11 · NVIDIA Jetson · CUDA GPU</span></div>
+      <h1 class="rv d1">
+        <span data-l="vi">Kiểm tra ngoại quan<br><span class="grad">không cần viết code</span></span>
+        <span data-l="en">Visual inspection<br><span class="grad">without writing code</span></span>
+      </h1>
+      <p class="lead rv d2">
+        <span data-l="vi">AI Vision OS gom camera, PLC và AI vào một phần mềm. Kỹ sư kéo‑thả tool thành quy trình, thử ngay trên ảnh, rồi đưa vào chạy sản xuất.</span>
+        <span data-l="en">AI Vision OS brings cameras, PLCs and AI into one application. Engineers drag tools into a workflow, test it on images, then put it into production.</span>
+      </p>
+      <div class="btns rv d3">
+        <a class="btn pri" href="#contact"><span data-l="vi">Nhận bản dùng thử</span><span data-l="en">Request a trial</span><svg><use href="#i-arrow"/></svg></a>
+        <a class="btn sec" href="#showcase"><svg><use href="#i-play"/></svg><span data-l="vi">Xem giao diện</span><span data-l="en">See the app</span></a>
+      </div>
+      <div class="ticks rv d3">
+        <span><svg><use href="#i-check"/></svg><span data-l="vi">126 tool kiểm tra</span><span data-l="en">126 inspection tools</span></span>
+        <span><svg><use href="#i-check"/></svg><span data-l="vi">AI YOLO tích hợp</span><span data-l="en">Built‑in YOLO AI</span></span>
+        <span><svg><use href="#i-check"/></svg><span data-l="vi">Key vĩnh viễn</span><span data-l="en">Perpetual key</span></span>
+      </div>
+    </div>
+    <div class="stage rv d2">
+      <div class="frame">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="images/recipe-builder.jpg" width="1300" height="731" alt="Recipe Builder: quy trình kiểm tra dạng sơ đồ node">
+        <div class="scan"></div>
+      </div>
+      <div class="chip ok c1"><span class="dot">OK</span><span><b>Align Position</b><small>valid · Δx 0.0 · 111 ms</small></span></div>
+      <div class="chip ng c2"><span class="dot">NG</span><span><b>Compare Master</b><small>different_pixels = 306</small></span></div>
+      <div class="chip ai c3"><span class="dot">AI</span><span><b>AI Anomaly</b><small>score 0.45 · heat map</small></span></div>
+    </div>
+  </div>
+
   <div class="wrap">
-    <h1>
-      <span data-l="vi">Phần mềm kiểm tra ngoại quan cho dây chuyền sản xuất</span>
-      <span data-l="en">Visual inspection software for production lines</span>
-    </h1>
-    <p class="lead">
-      <span data-l="vi">Kéo‑thả quy trình kiểm tra, không cần viết code. Camera, PLC và AI trong một ứng dụng, chạy trên Windows và NVIDIA Jetson.</span>
-      <span data-l="en">Drag‑and‑drop inspection workflows with no code. Cameras, PLCs and AI in one application, on Windows and NVIDIA Jetson.</span>
-    </p>
-    <div class="cta">
-      <a class="btn primary" href="#contact"><span data-l="vi">Nhận bản dùng thử</span><span data-l="en">Request a trial</span></a>
-      <a class="btn ghost" href="https://github.com/hntan0104/AI-Vision-OS">GitHub</a>
+    <div class="stats">
+      <div class="stat rv"><b data-count="126">126</b><span data-l="vi">tool kiểm tra</span><span data-l="en">inspection tools</span></div>
+      <div class="stat rv d1"><b data-count="4">4</b><span data-l="vi">trạm trên một máy</span><span data-l="en">stations per PC</span></div>
+      <div class="stat rv d2"><b data-count="5">5</b><span data-l="vi">dòng PLC hỗ trợ</span><span data-l="en">PLC families</span></div>
+      <div class="stat rv d3"><b>0</b><span data-l="vi">dòng code cần viết</span><span data-l="en">lines of code needed</span></div>
     </div>
-    <div class="flow" aria-label="Inspection flow">
-      <span>PLC trigger</span><i>→</i>
-      <span data-l="vi">Chụp ảnh</span><span data-l="en">Capture</span><i>→</i>
-      <span data-l="vi">Định vị</span><span data-l="en">Locate</span><i>→</i>
-      <span data-l="vi">Đo / tìm lỗi / AI</span><span data-l="en">Measure / defects / AI</span><i>→</i>
-      <span>OK / NG</span><i>→</i>
-      <span data-l="vi">Trả PLC + lưu dữ liệu</span><span data-l="en">PLC result + data</span>
+  </div>
+
+  <div class="strip" aria-label="Supported hardware">
+    <div class="track">
+      <span>BASLER USB3 / GigE</span><span>FLIR · TELEDYNE</span><span>USB / UVC</span><span>KEYENCE KV‑8000</span><span>MITSUBISHI MC</span><span>OMRON FINS</span><span>PANASONIC FP7</span><span>MODBUS TCP</span><span>NVIDIA JETSON ORIN</span><span>CUDA</span><span>YOLO</span><span>SAM</span>
+      <span aria-hidden="true">BASLER USB3 / GigE</span><span aria-hidden="true">FLIR · TELEDYNE</span><span aria-hidden="true">USB / UVC</span><span aria-hidden="true">KEYENCE KV‑8000</span><span aria-hidden="true">MITSUBISHI MC</span><span aria-hidden="true">OMRON FINS</span><span aria-hidden="true">PANASONIC FP7</span><span aria-hidden="true">MODBUS TCP</span><span aria-hidden="true">NVIDIA JETSON ORIN</span><span aria-hidden="true">CUDA</span><span aria-hidden="true">YOLO</span><span aria-hidden="true">SAM</span>
     </div>
-    <img class="hero-shot" src="images/recipe-builder.jpg" width="1300" height="731"
-         alt="Recipe Builder: quy trình kiểm tra dạng sơ đồ node">
   </div>
 </div>
 
-<div class="wrap">
-  <div class="stats">
-    <div><b>126</b><span data-l="vi">tool kiểm tra</span><span data-l="en">inspection tools</span></div>
-    <div><b>4</b><span data-l="vi">trạm trên một máy</span><span data-l="en">stations per PC</span></div>
-    <div><b>5</b><span data-l="vi">dòng PLC hỗ trợ</span><span data-l="en">PLC families</span></div>
-    <div><b>0</b><span data-l="vi">dòng code cần viết</span><span data-l="en">lines of code needed</span></div>
+<!-- HOW -->
+<section id="how">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Cách hoạt động</span><span data-l="en">How it works</span></span>
+      <h2><span data-l="vi">Từ ý tưởng tới dây chuyền trong 4 bước</span><span data-l="en">From idea to production line in 4 steps</span></h2>
+      <p><span data-l="vi">PLC trigger → chụp ảnh → định vị → đo / tìm lỗi / AI → OK/NG → trả kết quả cho PLC → lưu ảnh và dữ liệu.</span><span data-l="en">PLC trigger → capture → locate → measure / defects / AI → OK/NG → result to the PLC → save image and data.</span></p>
+    </div>
+    <div class="steps">
+      <div class="step rv"><div class="ic"><svg><use href="#i-cam"/></svg></div><div class="n">01</div>
+        <h3><span data-l="vi">Kết nối</span><span data-l="en">Connect</span></h3>
+        <p><span data-l="vi">Gán camera cho từng trạm, kết nối PLC, cài đèn chiếu sáng theo từng shot.</span><span data-l="en">Assign cameras to stations, connect the PLC, set lighting per shot.</span></p></div>
+      <div class="step rv d1"><div class="ic"><svg><use href="#i-flow"/></svg></div><div class="n">02</div>
+        <h3><span data-l="vi">Dựng recipe</span><span data-l="en">Build a recipe</span></h3>
+        <p><span data-l="vi">Kéo‑thả tool thành sơ đồ, tự nối dây, chỉnh ngưỡng và thử ngay trên ảnh hoặc video.</span><span data-l="en">Drag tools into a graph, auto‑wire, set thresholds and test on images or video.</span></p></div>
+      <div class="step rv d2"><div class="ic"><svg><use href="#i-ai"/></svg></div><div class="n">03</div>
+        <h3><span data-l="vi">Dạy AI</span><span data-l="en">Teach the AI</span></h3>
+        <p><span data-l="vi">Gán nhãn bằng Magic Wand, huấn luyện YOLO, hoặc chỉ cần ảnh OK với AI Teach.</span><span data-l="en">Label with Magic Wand, train YOLO, or use only OK images with AI Teach.</span></p></div>
+      <div class="step rv d3"><div class="ic"><svg><use href="#i-play"/></svg></div><div class="n">04</div>
+        <h3><span data-l="vi">Chạy sản xuất</span><span data-l="en">Run production</span></h3>
+        <p><span data-l="vi">Phát hành recipe, theo dõi OK/NG theo trạm, thống kê Pareto và SPC.</span><span data-l="en">Release the recipe, watch OK/NG per station, Pareto and SPC statistics.</span></p></div>
+    </div>
   </div>
-</div>
+</section>
 
+<!-- SHOWCASE -->
+<section id="showcase" style="padding-top:20px">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Giao diện</span><span data-l="en">Inside the app</span></span>
+      <h2><span data-l="vi">Mọi thứ trên một màn hình</span><span data-l="en">Everything on one screen</span></h2>
+      <p><span data-l="vi">Ảnh chụp từ phần mềm thật, không phải bản mô phỏng.</span><span data-l="en">Screenshots of the real software, not mock‑ups.</span></p>
+    </div>
+    <div class="show rv" id="show">
+      <div class="tabs" role="tablist">
+        <button class="tab on" role="tab"><b>Recipe Builder</b><span data-l="vi">Sơ đồ node song song hoặc tuần tự, dừng khi NG, kiểm tra lỗi sơ đồ.</span><span data-l="en">Parallel or sequential node graphs, stop on NG, graph validation.</span><i class="pg"></i></button>
+        <button class="tab" role="tab"><b><span data-l="vi">Nhiều shot, nhiều đèn</span><span data-l="en">Multi‑shot, multi‑light</span></b><span data-l="vi">Mỗi shot một điều kiện chiếu sáng và một chuỗi tool riêng.</span><span data-l="en">Each shot has its own lighting and tool chain.</span><i class="pg"></i></button>
+        <button class="tab" role="tab"><b><span data-l="vi">Cả dây chuyền</span><span data-l="en">Whole line</span></b><span data-l="vi">36 node, 8 chuỗi, 4 trạm trên một canvas.</span><span data-l="en">36 nodes, 8 chains, 4 stations on one canvas.</span><i class="pg"></i></button>
+        <button class="tab" role="tab"><b><span data-l="vi">Gán nhãn AI</span><span data-l="en">AI labelling</span></b><span data-l="vi">Bấm vào vật, Magic Wand (SAM) tự vẽ đường viền polygon.</span><span data-l="en">Click an object and Magic Wand (SAM) draws its polygon.</span><i class="pg"></i></button>
+        <button class="tab" role="tab"><b><span data-l="vi">Huấn luyện AI</span><span data-l="en">AI training</span></b><span data-l="vi">YOLO detect / segment / classify, theo dõi mAP, precision, recall.</span><span data-l="en">YOLO detect / segment / classify with mAP, precision, recall.</span><i class="pg"></i></button>
+        <button class="tab" role="tab"><b>AI Teach</b><span data-l="vi">Abnormal Detection, Image Search, Character Training: không cần gán nhãn.</span><span data-l="en">Abnormal Detection, Image Search, Character Training: no labelling.</span><i class="pg"></i></button>
+        <button class="tab" role="tab"><b><span data-l="vi">4 trạm, một PLC</span><span data-l="en">4 stations, one PLC</span></b><span data-l="vi">Mỗi trạm một camera, một recipe, một dải địa chỉ PLC.</span><span data-l="en">Each station has its own camera, recipe and PLC address range.</span><i class="pg"></i></button>
+      </div>
+      <div class="viewer">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img class="on" src="images/recipe-builder.jpg" width="1300" height="731" alt="Recipe Builder">
+        <img src="images/multishot.jpg" width="1300" height="731" loading="lazy" alt="Multi-shot">
+        <img src="images/line-canvas.jpg" width="1300" height="731" loading="lazy" alt="Whole line canvas">
+        <img src="images/ai-labeling.jpg" width="1300" height="731" loading="lazy" alt="AI labelling">
+        <img src="images/ai-training.jpg" width="1300" height="731" loading="lazy" alt="AI training">
+        <img src="images/ai-teach.jpg" width="1300" height="731" loading="lazy" alt="AI Teach">
+        <img src="images/plc-stations.jpg" width="1300" height="731" loading="lazy" alt="PLC stations">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Kết quả thật</span><span data-l="en">Real results</span></span>
+      <h2><span data-l="vi">Bắt lỗi nhỏ, đọc chữ, báo OK/NG tức thì</span><span data-l="en">Catch small defects, read text, judge OK/NG instantly</span></h2>
+    </div>
+    <div class="results">
+      <div class="res rv"><div class="img"><img src="images/result-compare-master-ng.jpg" width="1300" height="797" loading="lazy" alt="Compare Master NG"><span class="tag ng">NG</span></div>
+        <div class="body"><h3>Compare Master</h3>
+          <p><span data-l="vi">So với ảnh mẫu, phát hiện vết xước, chấm và đốm trên bề mặt.</span><span data-l="en">Compares against a master image and finds scratches, spots and marks.</span></p>
+          <div class="meta"><span>306 px</span><span>11.4 ms</span></div></div></div>
+      <div class="res rv d1"><div class="img"><img src="images/result-ai-anomaly-ng.jpg" width="1300" height="797" loading="lazy" alt="AI Anomaly NG"><span class="tag ng">NG</span></div>
+        <div class="body"><h3>AI Anomaly</h3>
+          <p><span data-l="vi">Chỉ học từ ảnh OK, heat map chỉ ra vùng bất thường.</span><span data-l="en">Learns from OK images only; a heat map shows the anomaly.</span></p>
+          <div class="meta"><span>score 0.45</span><span>8.57 mm²</span></div></div></div>
+      <div class="res rv d2"><div class="img"><img src="images/result-ocr.jpg" width="1300" height="797" loading="lazy" alt="OCR" style="object-position:30% 50%;transform-origin:30% 50%"><span class="tag ok">OK</span></div>
+        <div class="body"><h3>Read Text (OCR)</h3>
+          <p><span data-l="vi">Đọc mã lô, số seri, ngày giờ in trên sản phẩm.</span><span data-l="en">Reads lot codes, serial numbers and printed dates.</span></p>
+          <div class="meta"><span>LOT 2610‑17A</span><span>24 chars</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
 <section id="features">
   <div class="wrap">
-    <p class="kicker"><span data-l="vi">Tính năng</span><span data-l="en">Features</span></p>
-    <h2><span data-l="vi">Từ camera tới PLC, trong một ứng dụng</span><span data-l="en">From camera to PLC, in one application</span></h2>
-    <p class="sub">
-      <span data-l="vi">Một máy chạy được tới 4 trạm kiểm tra, mỗi trạm có camera và recipe riêng, dùng chung một PLC.</span>
-      <span data-l="en">One PC runs up to 4 inspection stations, each with its own camera and recipe, sharing one PLC.</span>
-    </p>
-    <div class="grid">
-      <div class="card"><h3>Production</h3><p data-l="vi">Ảnh và kết quả OK/NG theo từng trạm, từng shot; thống kê sản lượng, biểu đồ Pareto lỗi.</p><p data-l="en">Image and OK/NG result per station and shot; output statistics, defect Pareto chart.</p></div>
-      <div class="card"><h3>Recipe Builder</h3><p data-l="vi">Sơ đồ node song song hoặc tuần tự, dừng khi NG, tự nối dây, thử trên ảnh hoặc video, quản lý phiên bản recipe.</p><p data-l="en">Parallel or sequential node graphs, stop on NG, auto‑wiring, test on images or video, recipe versioning.</p></div>
-      <div class="card"><h3>AI Center</h3><p data-l="vi">Dataset → Label → Train → AI Teach → Deploy. Gán nhãn bằng Magic Wand (SAM), huấn luyện YOLO detect / segment / classify.</p><p data-l="en">Dataset → Label → Train → AI Teach → Deploy. Magic Wand (SAM) labelling, YOLO detect / segment / classify training.</p></div>
-      <div class="card"><h3>Camera &amp; PLC</h3><p data-l="vi">Live view, exposure / gain; map tín hiệu, thanh ghi, mã lỗi; bật đèn theo từng shot; tự kết nối lại.</p><p data-l="en">Live view, exposure / gain; signal, register and error‑code mapping; per‑shot lighting; auto‑reconnect.</p></div>
-      <div class="card"><h3>Object Count</h3><p data-l="vi">Đếm vật thể bằng AI + tracking: qua đường hoặc trong vùng, vào / ra, gửi số đếm cho PLC.</p><p data-l="en">AI + tracking object counting: line or zone, in / out, counts sent to the PLC.</p></div>
-      <div class="card"><h3>Reports &amp; Admin</h3><p data-l="vi">Lịch sử kiểm tra, SPC (Cpk), xuất CSV; nhật ký thao tác, sao lưu và khôi phục.</p><p data-l="en">Inspection history, SPC (Cpk), CSV export; audit log, backup and restore.</p></div>
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Tính năng</span><span data-l="en">Features</span></span>
+      <h2><span data-l="vi">Một phần mềm, đủ cho cả trạm kiểm tra</span><span data-l="en">One application for the whole inspection station</span></h2>
     </div>
-
-    <div class="split" style="margin-top:48px">
-      <div class="txt">
-        <h3><span data-l="vi">AI không cần chuyên gia</span><span data-l="en">AI without the specialists</span></h3>
-        <ul data-l="vi"><li>Gán nhãn polygon bán tự động bằng Magic Wand (SAM)</li><li>Huấn luyện YOLO, theo dõi mAP / precision / recall</li><li>AI Teach: học từ ảnh OK, không cần gán nhãn</li><li>Có GPU NVIDIA thì dùng CUDA, không có thì chạy CPU</li></ul>
-        <ul data-l="en"><li>Semi‑automatic polygon labelling with Magic Wand (SAM)</li><li>YOLO training with mAP / precision / recall</li><li>AI Teach: learn from OK images, no labelling</li><li>CUDA on an NVIDIA GPU, CPU fallback without one</li></ul>
-      </div>
-      <img src="images/ai-labeling.jpg" width="1300" height="731" loading="lazy" alt="AI Center: gán nhãn bằng Magic Wand">
-    </div>
-    <div class="split rev">
-      <div class="txt">
-        <h3><span data-l="vi">Nhiều shot, nhiều đèn</span><span data-l="en">Multiple shots, multiple lights</span></h3>
-        <ul data-l="vi"><li>Mỗi shot một điều kiện chiếu sáng, một chuỗi tool riêng</li><li>Light Fusion ghép nhiều ảnh đèn thành một</li><li>Hiệu chuẩn mm/pixel, servo, stereo 3D</li></ul>
-        <ul data-l="en"><li>Each shot has its own lighting and tool chain</li><li>Light Fusion merges images taken under different lights</li><li>mm/pixel, servo and stereo 3D calibration</li></ul>
-      </div>
-      <img src="images/multishot.jpg" width="1300" height="731" loading="lazy" alt="Recipe Builder: nhiều shot, nhiều đèn">
-    </div>
-    <div class="split">
-      <div class="txt">
-        <h3><span data-l="vi">4 trạm, một PLC</span><span data-l="en">4 stations, one PLC</span></h3>
-        <ul data-l="vi"><li>Mỗi trạm một camera, một recipe, một dải địa chỉ</li><li>Cả dây chuyền trên một canvas</li><li>Chế độ bảo trì, tự kết nối lại</li></ul>
-        <ul data-l="en"><li>Each station has its own camera, recipe and address range</li><li>The whole line on one canvas</li><li>Maintenance mode, auto‑reconnect</li></ul>
-      </div>
-      <img src="images/plc-stations.jpg" width="1300" height="731" loading="lazy" alt="PLC Setup: 4 trạm dùng chung một PLC">
+    <div class="bento">
+      <div class="card wide rv"><div class="ic"><svg><use href="#i-flow"/></svg></div>
+        <h3>Recipe Builder</h3>
+        <p><span data-l="vi">Chạy song song hoặc tuần tự, rẽ nhánh OK/NG, vòng lặp, nhóm node. Tự nối dây, kiểm tra lỗi sơ đồ, hiệu chuẩn mm/pixel, quản lý phiên bản và phát hành recipe.</span><span data-l="en">Parallel or sequential, OK/NG branching, loops, node groups. Auto‑wiring, graph validation, mm/pixel calibration, recipe versioning and release.</span></p>
+        <img src="images/multishot.jpg" width="1300" height="731" loading="lazy" alt=""></div>
+      <div class="card v rv d1"><div class="ic"><svg><use href="#i-ai"/></svg></div>
+        <h3>AI Center</h3>
+        <p><span data-l="vi">Dataset → Label → Train → AI Teach → Deploy. Magic Wand (SAM), YOLO, fine‑tune, gán nhãn theo keyframe video.</span><span data-l="en">Dataset → Label → Train → AI Teach → Deploy. Magic Wand (SAM), YOLO, fine‑tuning, video keyframe labelling.</span></p></div>
+      <div class="card g rv d2"><div class="ic"><svg><use href="#i-play"/></svg></div>
+        <h3>Production</h3>
+        <p><span data-l="vi">Ảnh và OK/NG theo trạm, theo shot; sản lượng, Pareto lỗi; chế độ RUN / EDIT.</span><span data-l="en">Image and OK/NG per station and shot; output, defect Pareto; RUN / EDIT modes.</span></p></div>
+      <div class="card rv"><div class="ic"><svg><use href="#i-cam"/></svg></div>
+        <h3>Camera</h3>
+        <p><span data-l="vi">Live view, exposure, gain, độ phân giải, trigger; gán camera cho từng trạm.</span><span data-l="en">Live view, exposure, gain, resolution, trigger; per‑station assignment.</span></p></div>
+      <div class="card a rv d1"><div class="ic"><svg><use href="#i-plc"/></svg></div>
+        <h3>PLC</h3>
+        <p><span data-l="vi">Map tín hiệu, thanh ghi, mã lỗi; đèn theo shot; chế độ bảo trì; tự kết nối lại.</span><span data-l="en">Signal, register and error mapping; per‑shot lighting; maintenance mode; auto‑reconnect.</span></p></div>
+      <div class="card v rv d2"><div class="ic"><svg><use href="#i-count"/></svg></div>
+        <h3>Object Count</h3>
+        <p><span data-l="vi">AI + tracking (ByteTrack / BoT‑SORT): đếm qua đường hoặc vùng, vào / ra, gửi PLC.</span><span data-l="en">AI + tracking (ByteTrack / BoT‑SORT): line or zone counting, in / out, sent to the PLC.</span></p></div>
+      <div class="card g rv d3"><div class="ic"><svg><use href="#i-chart"/></svg></div>
+        <h3>Reports &amp; Admin</h3>
+        <p><span data-l="vi">Lịch sử kiểm tra, SPC (Cpk), xuất CSV; audit log, sao lưu, khôi phục.</span><span data-l="en">Inspection history, SPC (Cpk), CSV export; audit log, backup, restore.</span></p></div>
+      <div class="card a rv"><div class="ic"><svg><use href="#i-ruler"/></svg></div>
+        <h3><span data-l="vi">Hiệu chuẩn</span><span data-l="en">Calibration</span></h3>
+        <p><span data-l="vi">Tỉ lệ mm/pixel tự bắt cạnh sub‑pixel, hiệu chuẩn theo đường, servo, stereo đo tư thế 3D.</span><span data-l="en">mm/pixel with sub‑pixel edge snapping, line calibration, servo, stereo 3D pose.</span></p></div>
+      <div class="card rv d1"><div class="ic"><svg><use href="#i-shield"/></svg></div>
+        <h3><span data-l="vi">Hướng dẫn tích hợp</span><span data-l="en">Built‑in manual</span></h3>
+        <p><span data-l="vi">Hướng dẫn tiếng Việt có ảnh từng màn hình, nút ? ở mọi trang, tải được PDF / DOCX.</span><span data-l="en">Illustrated Vietnamese manual, a ? button on every page, PDF / DOCX download.</span></p></div>
     </div>
   </div>
 </section>
 
-<section id="tools" style="padding-top:24px">
+<!-- TOOLS -->
+<section id="tools" style="padding-top:20px">
   <div class="wrap">
-    <p class="kicker"><span data-l="vi">Thư viện tool</span><span data-l="en">Tool library</span></p>
-    <h2><span data-l="vi">126 tool cho mọi bước kiểm tra</span><span data-l="en">126 tools for every inspection step</span></h2>
-    <p class="sub"><span data-l="vi">Kéo tool vào sơ đồ, nối dây, chỉnh ngưỡng và chạy thử ngay trên ảnh.</span><span data-l="en">Drag a tool into the graph, wire it, set thresholds and test on an image right away.</span></p>
-    <table>
-      <tr><th>AI (9)</th><td>AI Detect, AI Segment, AI Classify, AI Anomaly, AI Heat Map, AI Search, AI Count, AI Piece Count, AI Font (OCR)</td></tr>
-      <tr><th><span data-l="vi">Đo lường</span><span data-l="en">Measurement</span> (14)</th><td>Caliper, Outer Size, Edge Gap, Gap, Gap Profile, Measure Angle, Corner Angle, Hex Angle, Lug Position, Area Check, Blob Area, Blob Stats…</td></tr>
-      <tr><th>Edge / Profile (10)</th><td>Edge Position, Edge Width, Edge Pitch, Edge Pairs, Edge Angle, Profile Position, Profile Width, Profile Peak, Peak Width, Profile Defect</td></tr>
-      <tr><th><span data-l="vi">Tìm lỗi</span><span data-l="en">Defect</span> (18)</th><td>Surface Defect, Contour Defect, Compare Master, Crack Tracer, Edge Integrity, Hole Check, Pin Alignment, Assembly Check, Print Verify, Reflection Check, Texture Check, Dent Detector…</td></tr>
-      <tr><th><span data-l="vi">Định vị</span><span data-l="en">Positioning</span> (7)</th><td>Find Pattern, Find Shape, Find Contour, Track Pattern, Align Position</td></tr>
-      <tr><th><span data-l="vi">Màu / Mã / OCR</span><span data-l="en">Color / Code / OCR</span> (7)</th><td>Color Check, Color Defect, Color Groups, Read Barcode, Read 2D Code (QR, DataMatrix), Read Text</td></tr>
-      <tr><th>3D (4)</th><td>3D Flatness, 3D Bumps, 3D Compare, Plate Pose</td></tr>
-      <tr><th>Blob / Threshold (10)</th><td>Blobs, Threshold, Auto Threshold, Dual Threshold, Morphology, Drop Specks, Fill Holes, Skeleton, Top‑Hat</td></tr>
-      <tr><th><span data-l="vi">Tiền xử lý</span><span data-l="en">Preprocessing</span> (26)</th><td>Exposure, Filter, Restoration, Light Fusion, Features, Brightness, ROI Box, Grab / Open Image</td></tr>
-      <tr><th><span data-l="vi">Logic / Luồng</span><span data-l="en">Logic / Flow</span> (20)</th><td>Judge, Zone Judge, Defect Classifier, Calculate, Trend Watch, Final Verdict, Branch, Switch / Case, Loop, Parallel, Wait, Stop</td></tr>
-      <tr><th>Output (1)</th><td>Save Image</td></tr>
-    </table>
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Thư viện tool</span><span data-l="en">Tool library</span></span>
+      <h2><span data-l="vi">126 tool cho mọi bước kiểm tra</span><span data-l="en">126 tools for every inspection step</span></h2>
+      <p><span data-l="vi">Chọn một nhóm để xem các tool trong đó.</span><span data-l="en">Pick a group to see its tools.</span></p>
+    </div>
+    <div class="filters rv" id="filters"></div>
+    <div class="pills" id="pills"></div>
   </div>
 </section>
 
-<section id="hardware" style="padding-top:24px">
+<!-- INDUSTRIES -->
+<section style="padding-top:40px">
   <div class="wrap">
-    <p class="kicker"><span data-l="vi">Phần cứng</span><span data-l="en">Hardware</span></p>
-    <h2><span data-l="vi">Kết nối thiết bị có sẵn trong nhà máy</span><span data-l="en">Works with the equipment you already have</span></h2>
-    <p class="sub"><span data-l="vi">Mỗi máy dùng một key gắn với Machine ID. Key không hết hạn, vẫn dùng được khi thay ổ đĩa hoặc cài lại hệ điều hành.</span><span data-l="en">Each PC uses one key tied to its Machine ID. Keys never expire and survive a drive replacement or OS reinstall.</span></p>
-    <table>
-      <tr><th>Camera</th><td>Basler (USB3 / GigE), FLIR / Teledyne, USB / UVC, <span data-l="vi">thư mục ảnh (camera ảo)</span><span data-l="en">image folder (virtual camera)</span></td></tr>
-      <tr><th>PLC</th><td>KEYENCE KV‑8000 (Host Link), Panasonic FP7 (MEWTOCOL), Mitsubishi (MC protocol), Omron (FINS), Modbus TCP</td></tr>
-      <tr><th><span data-l="vi">Máy tính</span><span data-l="en">Computer</span></th><td>Windows 10/11 x64 · NVIDIA Jetson Orin (JetPack 6) · <span data-l="vi">GPU NVIDIA CUDA (không bắt buộc)</span><span data-l="en">NVIDIA CUDA GPU (optional)</span></td></tr>
-    </table>
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Ứng dụng</span><span data-l="en">Use cases</span></span>
+      <h2><span data-l="vi">Phù hợp với nhiều ngành sản xuất</span><span data-l="en">Fits many kinds of production</span></h2>
+    </div>
+    <div class="inds">
+      <div class="ind rv"><h3><span class="ii"><svg><use href="#i-plc"/></svg></span><span data-l="vi">Điện tử &amp; linh kiện</span><span data-l="en">Electronics &amp; components</span></h3><p><span data-l="vi">Lệch chân, thiếu linh kiện, kiểm tra lắp ráp, đọc mã DataMatrix.</span><span data-l="en">Pin alignment, missing parts, assembly checks, DataMatrix reading.</span></p></div>
+      <div class="ind rv d1"><h3><span class="ii"><svg><use href="#i-ruler"/></svg></span><span data-l="vi">Cơ khí &amp; kim loại</span><span data-l="en">Machining &amp; metal</span></h3><p><span data-l="vi">Đo kích thước, góc, khe hở; vết xước, móp, nứt trên bề mặt.</span><span data-l="en">Dimensions, angles, gaps; scratches, dents and cracks.</span></p></div>
+      <div class="ind rv d2"><h3><span class="ii"><svg><use href="#i-shield"/></svg></span><span data-l="vi">Nhựa &amp; cao su</span><span data-l="en">Plastic &amp; rubber</span></h3><p><span data-l="vi">Bavia, thiếu liệu, lỗ, màu sai, biến dạng đường viền.</span><span data-l="en">Flash, short shots, holes, wrong color, contour defects.</span></p></div>
+      <div class="ind rv"><h3><span class="ii"><svg><use href="#i-flow"/></svg></span><span data-l="vi">Bao bì &amp; in ấn</span><span data-l="en">Packaging &amp; printing</span></h3><p><span data-l="vi">Đọc hạn sử dụng, mã lô, barcode, QR; kiểm tra chữ in.</span><span data-l="en">Expiry dates, lot codes, barcodes, QR; print verification.</span></p></div>
+      <div class="ind rv d1"><h3><span class="ii"><svg><use href="#i-chart"/></svg></span><span data-l="vi">Dệt may &amp; dây</span><span data-l="en">Textile &amp; wire</span></h3><p><span data-l="vi">Kiểm tra sợi, bề mặt vải, đứt sợi, kết cấu bất thường.</span><span data-l="en">Strands, fabric surface, broken threads, abnormal texture.</span></p></div>
+      <div class="ind rv d2"><h3><span class="ii"><svg><use href="#i-count"/></svg></span><span data-l="vi">Đếm &amp; theo dõi</span><span data-l="en">Counting &amp; tracking</span></h3><p><span data-l="vi">Đếm sản phẩm trên băng chuyền, đếm vào / ra, gửi số cho PLC.</span><span data-l="en">Count parts on conveyors, in / out, counts sent to the PLC.</span></p></div>
+    </div>
   </div>
 </section>
 
-<section id="contact" style="padding-top:24px">
+<!-- HARDWARE -->
+<section id="hardware" style="padding-top:40px">
   <div class="wrap">
-    <div class="contact">
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Phần cứng</span><span data-l="en">Hardware</span></span>
+      <h2><span data-l="vi">Dùng thiết bị có sẵn trong nhà máy</span><span data-l="en">Works with the equipment you already have</span></h2>
+    </div>
+    <div class="hw">
+      <div class="card rv"><div class="ic"><svg><use href="#i-cam"/></svg></div><h3>Camera</h3>
+        <ul><li>Basler<span>USB3 · GigE</span></li><li>FLIR / Teledyne<span>Spinnaker</span></li><li>USB / UVC<span>Windows · Linux</span></li><li><span data-l="vi">Thư mục ảnh</span><span data-l="en">Image folder</span><span data-l="vi">camera ảo</span><span data-l="en">virtual</span></li></ul></div>
+      <div class="card a rv d1"><div class="ic"><svg><use href="#i-plc"/></svg></div><h3>PLC</h3>
+        <ul><li>KEYENCE KV‑8000<span>Host Link</span></li><li>Mitsubishi<span>MC protocol</span></li><li>Omron<span>FINS</span></li><li>Panasonic FP7<span>MEWTOCOL</span></li><li><span data-l="vi">Các PLC khác</span><span data-l="en">Other PLCs</span><span>Modbus TCP</span></li></ul></div>
+      <div class="card g rv d2"><div class="ic"><svg><use href="#i-shield"/></svg></div><h3><span data-l="vi">Máy tính</span><span data-l="en">Computer</span></h3>
+        <ul><li>Windows 10 / 11<span>x64</span></li><li>NVIDIA Jetson Orin<span>JetPack 6</span></li><li><span data-l="vi">GPU NVIDIA</span><span data-l="en">NVIDIA GPU</span><span data-l="vi">CUDA · không bắt buộc</span><span data-l="en">CUDA · optional</span></li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section style="padding-top:40px">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Vì sao chọn</span><span data-l="en">Why AI Vision OS</span></span>
+      <h2><span data-l="vi">Làm cho kỹ sư nhà máy</span><span data-l="en">Made for factory engineers</span></h2>
+    </div>
+    <div class="why rv">
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Không cần lập trình</span><span data-l="en">No programming</span></h3><p><span data-l="vi">Kéo‑thả và chỉnh thông số; kỹ sư sản xuất tự dựng và sửa recipe.</span><span data-l="en">Drag, drop and tune; production engineers build and edit recipes themselves.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Chạy tại xưởng</span><span data-l="en">Runs on site</span></h3><p><span data-l="vi">Phần mềm và AI chạy trên máy tại chỗ, không phụ thuộc cloud.</span><span data-l="en">Software and AI run on the local PC, with no cloud dependency.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Key vĩnh viễn</span><span data-l="en">Perpetual key</span></h3><p><span data-l="vi">Một key cho mỗi máy, không hết hạn, giữ nguyên khi cài lại Windows.</span><span data-l="en">One key per PC, never expires, survives a Windows reinstall.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">AI có hoặc không GPU</span><span data-l="en">AI with or without a GPU</span></h3><p><span data-l="vi">Có GPU NVIDIA thì dùng CUDA, không có thì tự chạy bằng CPU.</span><span data-l="en">CUDA with an NVIDIA GPU, automatic CPU fallback without one.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Tài liệu tiếng Việt</span><span data-l="en">Vietnamese manual</span></h3><p><span data-l="vi">Hướng dẫn chi tiết có ảnh từng màn hình, ngay trong phần mềm.</span><span data-l="en">A detailed, illustrated manual built into the software.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Có thể mua kèm mã nguồn</span><span data-l="en">Source code available</span></h3><p><span data-l="vi">Tùy chọn mua kèm mã nguồn để tự phát triển thêm.</span><span data-l="en">An option to buy the source code and extend it yourself.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="padding-top:40px">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="kick">FAQ</span>
+      <h2><span data-l="vi">Câu hỏi thường gặp</span><span data-l="en">Frequently asked questions</span></h2>
+    </div>
+    <div class="faq">
+      <details class="rv"><summary><span data-l="vi">Có bắt buộc phải có GPU không?</span><span data-l="en">Do I need a GPU?</span></summary>
+        <p><span data-l="vi">Không. Mọi tính năng AI tự chạy bằng CPU khi máy không có GPU. Có GPU NVIDIA thì huấn luyện và chạy AI nhanh hơn nhiều.</span><span data-l="en">No. Every AI feature falls back to the CPU without a GPU. An NVIDIA GPU makes training and inference much faster.</span></p></details>
+      <details class="rv"><summary><span data-l="vi">Bản quyền tính theo máy như thế nào?</span><span data-l="en">How does licensing work?</span></summary>
+        <p><span data-l="vi">Lần chạy đầu, phần mềm hiện Machine ID của máy. Bạn gửi mã này để nhận một key. Key không hết hạn, vẫn dùng được khi thay ổ đĩa hoặc cài lại hệ điều hành, nhưng không dùng được trên máy khác.</span><span data-l="en">On first launch the software shows the PC's Machine ID. Send it to receive a key. Keys never expire and survive a drive replacement or OS reinstall, but do not work on another PC.</span></p></details>
+      <details class="rv"><summary><span data-l="vi">Một máy chạy được bao nhiêu camera?</span><span data-l="en">How many cameras can one PC run?</span></summary>
+        <p><span data-l="vi">Tới 4 trạm, mỗi trạm một camera và một recipe, mỗi recipe có thể chụp nhiều shot với nhiều chế độ đèn. Cả 4 trạm dùng chung một PLC.</span><span data-l="en">Up to 4 stations, each with one camera and one recipe; each recipe can take several shots under different lights. All 4 share one PLC.</span></p></details>
+      <details class="rv"><summary><span data-l="vi">Có chạy được trên máy tính nhúng không?</span><span data-l="en">Does it run on embedded hardware?</span></summary>
+        <p><span data-l="vi">Có. Ngoài Windows 10/11, phần mềm chạy trên NVIDIA Jetson Orin (JetPack 6). Recipe dựng trên Windows chạy được trên Jetson và ngược lại.</span><span data-l="en">Yes. Besides Windows 10/11, it runs on NVIDIA Jetson Orin (JetPack 6). A recipe built on Windows runs on Jetson and the other way round.</span></p></details>
+      <details class="rv"><summary><span data-l="vi">Có bản dùng thử không?</span><span data-l="en">Is there a trial?</span></summary>
+        <p><span data-l="vi">Có. Liên hệ qua email hoặc điện thoại bên dưới để nhận bộ cài đặt và key dùng thử.</span><span data-l="en">Yes. Contact us by email or phone below for the installer and a trial key.</span></p></details>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="padding-top:40px">
+  <div class="wrap">
+    <div class="cta rv">
       <div>
-        <h2><span data-l="vi">Dùng thử AI Vision OS</span><span data-l="en">Try AI Vision OS</span></h2>
-        <p><span data-l="vi">Liên hệ để nhận bộ cài đặt, bản dùng thử, mã nguồn hoặc báo giá.</span><span data-l="en">Get in touch for the installer, a trial, the source code or a quote.</span></p>
+        <span class="kick"><span data-l="vi">Liên hệ</span><span data-l="en">Contact</span></span>
+        <h2><span data-l="vi">Sẵn sàng thử trên<br>dây chuyền của bạn?</span><span data-l="en">Ready to try it<br>on your line?</span></h2>
+        <p><span data-l="vi">Nhận bộ cài đặt, bản dùng thử, mã nguồn hoặc báo giá.</span><span data-l="en">Get the installer, a trial, the source code or a quote.</span></p>
       </div>
-      <div class="links">
-        <a href="mailto:hntan0104@gmail.com?subject=AI%20Vision%20OS"><span>✉</span><span>hntan0104@gmail.com<small>Email</small></span></a>
-        <a href="tel:+84822222979"><span>☎</span><span>+84 822 222 979<small data-l="vi">Điện thoại</small><small data-l="en">Phone</small></span></a>
+      <div class="contacts">
+        <a href="mailto:hntan0104@gmail.com?subject=AI%20Vision%20OS"><span class="ic"><svg><use href="#i-mail"/></svg></span><span><b>hntan0104@gmail.com</b><small>Email</small></span></a>
+        <a href="tel:+84822222979"><span class="ic"><svg><use href="#i-phone"/></svg></span><span><b>+84 822 222 979</b><small><span data-l="vi">Điện thoại</span><span data-l="en">Phone</span></small></span></a>
+        <a href="https://github.com/hntan0104/AI-Vision-OS"><span class="ic"><svg><use href="#i-gh"/></svg></span><span><b>GitHub</b><small>hntan0104/AI-Vision-OS</small></span></a>
       </div>
     </div>
   </div>
 </section>
 
-<footer>© 2026 hntan0104 · <span data-l="vi">Phần mềm độc quyền, bảo lưu mọi quyền.</span><span data-l="en">Proprietary software, all rights reserved.</span></footer>
+<footer>
+  <div class="wrap">
+    <span>© 2026 hntan0104 · <span data-l="vi">Phần mềm độc quyền, bảo lưu mọi quyền.</span><span data-l="en">Proprietary software, all rights reserved.</span></span>
+    <a href="#top"><span data-l="vi">Lên đầu trang ↑</span><span data-l="en">Back to top ↑</span></a>
+  </div>
+</footer>
 
 <script>
 (function(){
-  var root=document.documentElement, btn=document.getElementById('lang');
-  function set(l){root.lang=l;btn.textContent=l==='vi'?'EN':'VI';try{localStorage.setItem('aivos-lang',l)}catch(e){}}
+  var root=document.documentElement; root.classList.add('js');
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* language */
+  var btn=document.getElementById('lang');
+  function setLang(l){root.lang=l;btn.textContent=l==='vi'?'EN':'VI';try{localStorage.setItem('aivos-lang',l)}catch(e){};renderTools()}
   var saved=null;try{saved=localStorage.getItem('aivos-lang')}catch(e){}
   var q=new URLSearchParams(location.search).get('lang');
-  set(q==='en'||q==='vi'?q:(saved||((navigator.language||'vi').toLowerCase().indexOf('vi')===0?'vi':'en')));
-  btn.addEventListener('click',function(){set(root.lang==='vi'?'en':'vi')});
+
+  /* nav */
+  var nav=document.getElementById('nav');
+  function onScroll(){nav.classList.toggle('solid',scrollY>20)}
+  addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  /* reveal + count-up */
+  function countUp(el){
+    var to=+el.dataset.count,t0=null;if(reduce){el.textContent=to;return}
+    function f(t){t0=t0||t;var p=Math.min(1,(t-t0)/1200);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)}
+    requestAnimationFrame(f);
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('[data-count]').forEach(countUp);io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+  } else document.querySelectorAll('.rv').forEach(function(el){el.classList.add('in')});
+
+  /* card glow follows pointer */
+  document.querySelectorAll('.card').forEach(function(c){
+    c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')});
+  });
+
+  /* showcase tabs */
+  var show=document.getElementById('show'),tabs=[].slice.call(show.querySelectorAll('.tab')),imgs=[].slice.call(show.querySelectorAll('.viewer img')),cur=0,timer=null,DUR=6500;
+  function go(i){
+    tabs[cur].classList.remove('on');imgs[cur].classList.remove('on');
+    cur=(i+tabs.length)%tabs.length;
+    var t=tabs[cur];t.classList.add('on');imgs[cur].classList.add('on');
+    var pg=t.querySelector('.pg');pg.style.animation='none';void pg.offsetWidth;pg.style.animation='';
+    if(innerWidth<900){t.parentNode.scrollTo({left:t.offsetLeft-20,behavior:reduce?'auto':'smooth'})}
+    schedule();
+  }
+  function schedule(){clearTimeout(timer);if(!reduce&&!show.classList.contains('paused'))timer=setTimeout(function(){go(cur+1)},DUR)}
+  tabs.forEach(function(t,i){t.addEventListener('click',function(){go(i)})});
+  show.addEventListener('mouseenter',function(){show.classList.add('paused');clearTimeout(timer)});
+  show.addEventListener('mouseleave',function(){show.classList.remove('paused');schedule()});
+  show.style.setProperty('--dur',DUR+'ms');schedule();
+
+  /* tool library */
+  var G=[
+   {vi:'AI',en:'AI',t:['AI Detect','AI Segment','AI Classify','AI Anomaly','AI Heat Map','AI Search','AI Count','AI Piece Count','AI Font (OCR)']},
+   {vi:'Đo lường',en:'Measurement',t:['Caliper','Outer Size','Edge Gap','Gap (2 ROI)','Gap Profile','Measure Angle','Angle (2 ROI)','Angle (2 Seg)','Corner Angle','Hex Angle','Lug Position','Area Check','Blob Area','Blob Stats']},
+   {vi:'Edge / Profile',en:'Edge / Profile',t:['Edge Position','Edge Width','Edge Pitch','Edge Pairs','Edge Angle','Profile Position','Profile Width','Profile Peak','Peak Width','Profile Defect']},
+   {vi:'Tìm lỗi',en:'Defect',t:['Surface Defect','Surface Check','Contour Defect','Multi‑Profile Defect','Compare Master','Crack Tracer','Edge Integrity','Hole Check','Pin Alignment','Assembly Check','Print Verify','Reflection Check','Strand Check','Texture Check','Statistical Check','Feature Check','Dent Check','Dent Detector']},
+   {vi:'Định vị',en:'Positioning',t:['Find Pattern','Find Shape','Find Contour ×3','Track Pattern','Align Position']},
+   {vi:'Màu / Mã / OCR',en:'Color / Code / OCR',t:['Color Check','Color Defect','Color Groups','Read Barcode','Read 2D Code','Read Text','Read Text 2']},
+   {vi:'3D',en:'3D',t:['3D Flatness','3D Bumps','3D Compare','Plate Pose (3D)']},
+   {vi:'Blob / Ngưỡng',en:'Blob / Threshold',t:['Blobs (Binary)','Blobs (Gray)','Threshold','Auto Threshold','Dual Threshold','Morphology','Drop Specks','Fill Holes','Skeleton','Top‑Hat']},
+   {vi:'Tiền xử lý',en:'Preprocessing',n:26,t:['Exposure ×7','Filter ×5','Restoration ×5','Preprocess ×3 (Light Fusion…)','Features ×2','Brightness','ROI Box','Grab Image','Open Image']},
+   {vi:'Logic / Luồng',en:'Logic / Flow',t:['Judge','Judge Defects','Zone Judge','Defect Classifier','Calculate','Trend Watch','Final Verdict','Branch OK/NG','Switch','Case','Else','Loop','Parallel Start','Parallel Sync','Parallel Wait','Group','Wait','Stop','Break','End']},
+   {vi:'Output',en:'Output',t:['Save Image']}
+  ];
+  var sel=0,F=document.getElementById('filters'),P=document.getElementById('pills');
+  function renderTools(){
+    if(!F)return; var l=root.lang==='en'?'en':'vi';
+    F.innerHTML='';G.forEach(function(g,i){var b=document.createElement('button');b.className='f'+(i===sel?' on':'');b.type='button';
+      b.innerHTML=g[l]+'<i>'+(g.n||g.t.length)+'</i>';b.onclick=function(){sel=i;renderTools()};F.appendChild(b)});
+    P.innerHTML='';G[sel].t.forEach(function(name,j){var s=document.createElement('span');s.className='pill';s.style.animationDelay=(reduce?0:j*25)+'ms';s.textContent=name;P.appendChild(s)});
+  }
+  setLang(q==='en'||q==='vi'?q:(saved||((navigator.language||'vi').toLowerCase().indexOf('vi')===0?'vi':'en')));
+  btn.addEventListener('click',function(){setLang(root.lang==='vi'?'en':'vi')});
 })();
 </script>
 </body>
