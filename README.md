@@ -99,7 +99,8 @@ Ngoài ra:
 
 Để nhận bộ cài đặt, dùng thử hoặc báo giá:
 
-> **[ĐIỀN THÔNG TIN LIÊN HỆ]**
+> Gmail: hntan0104@gmail.com
+> Phone: +84822222979 
 
 ---
 
