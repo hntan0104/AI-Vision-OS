@@ -83,13 +83,93 @@ Ngoài ra:
 | **Logic / Luồng** (20) | Judge, Judge Defects, Zone Judge, Defect Classifier, Calculate, Trend Watch, Final Verdict; Branch OK/NG, Switch / Case, Loop, Parallel, Group, Wait, Stop, Break |
 | **Output** (1) | Save Image: lưu theo OK/NG, theo ngày / ca / trạm |
 
-## Phần cứng hỗ trợ
+## Hiệu năng thực tế
 
-| Loại | Hỗ trợ |
+Số đo trên một dây chuyền đang chạy, tháng 9–10/2026: 4 trạm, mỗi mặt sản phẩm chụp 2 ảnh (đèn sáng và đèn tối).
+Máy: Dell Precision 7680, NVIDIA RTX 2000 Ada Laptop GPU 8 GB. Camera: 4 × Basler acA3800‑14uc (10 MP, USB3). PLC: Panasonic FP7.
+
+| Chỉ số | Kết quả |
 |---|---|
-| **Camera** | Basler (USB3 / GigE), FLIR / Teledyne, camera USB / UVC, thư mục ảnh (camera ảo để thử) |
-| **PLC** | KEYENCE KV‑8000 (Host Link), Panasonic FP7 (MEWTOCOL), Mitsubishi (MC protocol), Omron (FINS), Modbus TCP |
-| **Máy tính** | Windows 10/11 x64 (GPU NVIDIA nếu muốn chạy AI bằng GPU) · NVIDIA Jetson Orin với JetPack 6 |
+| Trigger → Ready cho một mặt (gồm 2 lần chụp và toàn bộ tool) | **~400 ms** |
+| Bàn xoay được sau Trigger (Busy bật ngay khi chụp xong) | **~230 ms** |
+| Chạy toàn bộ tool của một mặt (trong lúc bàn xoay) | **~95 ms** |
+| Một ảnh qua AI YOLO segment, đầu cuối, trên GPU | **~12 ms** |
+| Mạng YOLOv8n‑seg: 1 ảnh / 4 ảnh (CUDA graph) | 2.0 ms / 6.8 ms (trước đó 28.4 ms cho 1 ảnh) |
+| AI sau khi line nghỉ 12–30 s | 26–28 ms (không còn chậm ~0,9 s do GPU ngủ) |
+| Chụp 1 ảnh 1918×1372 / full 3840×2748 | ~58 ms / 112–122 ms |
+| Find Shape / Compare Master | ~14 ms / 11.4 ms |
+| Một lệnh PLC (FP7, Ethernet) | ~4.6 ms |
+| Lưu ảnh 10 MP PNG | ~320 ms, chạy nền: 0 ms trên chu kỳ |
+
+Thời gian thực tế phụ thuộc camera, độ phân giải và số tool trong recipe. Cách tốt nhất là chạy thử trên ảnh sản phẩm của bạn.
+
+## Xử lý các trường hợp khó
+
+Những lỗi mà ngưỡng sáng tối thông thường bỏ sót. Các tool này được xây dựng từ ảnh thật trên line.
+
+| Bài toán | Cách xử lý | Tool |
+|---|---|---|
+| Nhựa đen bóng: vết lõm, cong vênh nhìn ảnh không thấy | Đọc vệt đèn phản chiếu trên bề mặt bóng: mặt phẳng cho vệt thẳng đều, chỗ lõm làm vệt cong, hẹp, đứt | Reflection Check |
+| Lỗi hình dạng hay chỉ là vết màu (vết khí, vết chảy)? | Chụp 3–4 ảnh với đèn từ các phía (photometric stereo): chỗ lõm đổi sáng tối theo hướng đèn, vết màu thì không | Light Fusion |
+| Thiếu liệu, bavia giữa các vết khí vô hại | So đường viền và độ nhám với hàng tốt, thứ mà độ bóng và góc đèn không làm thay đổi | Edge Integrity, Surface Check |
+| Vết nứt chân tóc 1–4 px, lúc rõ lúc mờ | Tìm đường mảnh thay vì điểm tối, bám theo cả chiều dài, không nhầm bụi thành lỗi | Crack Tracer |
+| Vết móp trên bề mặt đúc, đèn sọc, hạt thô | Nhận ra vết móp nhờ mép sắc, dài, cong của nó, khác với sọc đèn và hạt bề mặt | Dent Detector |
+| Sản phẩm lệch vị trí, xoay góc | Định vị theo hình dạng (ít phụ thuộc ánh sáng), có góc, tỉ lệ, sub‑pixel; mọi vùng kiểm tra tự đi theo sản phẩm | Find Shape, Align Position |
+| Mỗi vùng dao động khác nhau (cạnh, chữ in, vùng đèn chiếu) | Học 10–30 hàng tốt, mỗi pixel một ngưỡng riêng | Statistical Check |
+| Không có đủ ảnh lỗi để huấn luyện AI | AI chỉ học từ ảnh hàng OK; heat map chỉ ra vùng bất thường và diện tích (mm²) | AI Anomaly, AI Teach |
+| Chân connector cong, ngắn, thiếu; lỗ bị lấp | Đo từng chân: độ cong, chiều dài, vị trí đầu chân. Lỗ: tâm và đường kính tới 0,1 px | Pin Alignment, Hole Check |
+
+## Ổn định khi chạy sản xuất
+
+- **Không mất Trigger:** Trigger đến khi chưa Ready được giữ lại và xử lý ngay khi Ready.
+- **Không ảnh mờ:** Busy chỉ bật khi đã chụp xong mọi ảnh, bàn không xoay lúc đang chụp.
+- **Báo khi ảnh tối:** ảnh có bật đèn mà ra tối (đèn hỏng, mất đèn) được cảnh báo ngay.
+- **Mất camera, PLC biết ngay:** bật Error kèm mã lỗi cho PLC, tự xóa khi camera được cắm lại.
+- **Tự kết nối lại PLC** mỗi 2 giây, xóa trạng thái cũ khi kết nối lại.
+- **Ổ đĩa chậm không làm dừng line:** ảnh ghi ở luồng nền với hàng đợi giới hạn; PLC luôn nhận kết quả trước.
+- **Log từng chu kỳ:** một dòng thời gian cho mỗi chu kỳ (Trigger, chụp, Busy, kết quả, Ready) và thống kê đường truyền PLC mỗi phút.
+- **Hơn 3.500 bài kiểm thử tự động** cho tool, PLC, camera và AI.
+
+## Thông số kỹ thuật
+
+**Máy tính Windows**
+
+| | |
+|---|---|
+| Hệ điều hành | Windows 10 / 11, 64‑bit |
+| Ổ đĩa trống | ≥ 15 GB |
+| GPU | NVIDIA, driver ≥ 560 (CUDA 12.6), không bắt buộc; không có GPU thì AI chạy bằng CPU (chậm hơn) |
+| Internet | Không cần: trọng số AI có sẵn trong bộ cài |
+| Cài đặt | Không cần quyền admin; có lệnh tự kiểm tra `--selfcheck` |
+| Đang chạy trên line | Dell Precision 7680 · RTX 2000 Ada Laptop 8 GB |
+
+**NVIDIA Jetson:** Jetson Orin, JetPack 6.x (L4T R36, CUDA 12.6). Gói `.tar.gz` aarch64, thêm menu không cần root. Recipe dùng chung với Windows, cả hai chiều. Camera Basler USB3 cần `usbcore.usbfs_memory_mb=1000`.
+
+**Camera**
+
+| | |
+|---|---|
+| Basler | ace USB3 / GigE (pylon); đang chạy acA3800‑14uc 10 MP |
+| FLIR / Teledyne | Spinnaker |
+| USB / UVC | DirectShow (Windows) · V4L2 (Linux) |
+| Số trạm | Tới 4 trạm / máy; mỗi trạm nhiều shot, mỗi shot một chế độ đèn |
+| Độ phân giải | Tới full sensor; giảm bằng binning/ROI phần cứng để chụp nhanh |
+| Hiệu chuẩn | mm/pixel bắt cạnh sub‑pixel (ví dụ trên line: 0,0718 mm/px); theo đường, servo, stereo 3D |
+
+**PLC và tín hiệu**
+
+| | |
+|---|---|
+| KEYENCE KV‑8000 | Host Link · UDP |
+| Panasonic FP7 | MEWTOCOL · TCP |
+| Mitsubishi | MC protocol · TCP |
+| Omron | FINS · UDP |
+| PLC khác | Modbus TCP |
+| Handshake | Trigger · Ready · Busy · OK · NG · ResultACK · Error |
+| Thanh ghi | Mã kết quả, mã lỗi, loại lỗi, thời gian xử lý |
+| Đèn | Bật / đổi đèn theo từng shot qua ngõ ra PLC |
+
+**Dữ liệu:** lưu ảnh PNG hoặc JPG theo OK/NG, ngày, ca, trạm; cơ sở dữ liệu SQLite, xuất CSV; Pareto lỗi, SPC (Cpk); recipe có phiên bản và Release; nhật ký thao tác; sao lưu và khôi phục.
 
 ## Bản quyền và kích hoạt
 

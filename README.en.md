@@ -83,13 +83,93 @@ Also:
 | **Logic / Flow** (20) | Judge, Judge Defects, Zone Judge, Defect Classifier, Calculate, Trend Watch, Final Verdict; Branch OK/NG, Switch / Case, Loop, Parallel, Group, Wait, Stop, Break |
 | **Output** (1) | Save Image: by OK/NG, by date / shift / station |
 
-## Supported hardware
+## Real‑world performance
 
-| Type | Supported |
+Measured on a running production line, Sep–Oct 2026: 4 stations, two pictures per product face (bright and dark lighting).
+PC: Dell Precision 7680, NVIDIA RTX 2000 Ada Laptop GPU 8 GB. Cameras: 4 × Basler acA3800‑14uc (10 MP, USB3). PLC: Panasonic FP7.
+
+| Metric | Result |
 |---|---|
-| **Cameras** | Basler (USB3 / GigE), FLIR / Teledyne, USB / UVC cameras, image folder (virtual camera for testing) |
-| **PLCs** | KEYENCE KV‑8000 (Host Link), Panasonic FP7 (MEWTOCOL), Mitsubishi (MC protocol), Omron (FINS), Modbus TCP |
-| **Computers** | Windows 10/11 x64 (NVIDIA GPU for GPU‑accelerated AI) · NVIDIA Jetson Orin with JetPack 6 |
+| Trigger → Ready per face (2 pictures and every tool) | **~400 ms** |
+| Table may move after Trigger (Busy turns on once pictures are taken) | **~230 ms** |
+| Every tool of one face (while the table turns) | **~95 ms** |
+| One picture through YOLO segmentation, end to end, on the GPU | **~12 ms** |
+| YOLOv8n‑seg network: 1 picture / 4 pictures (CUDA graph) | 2.0 ms / 6.8 ms (was 28.4 ms for 1) |
+| AI after the line idles 12–30 s | 26–28 ms (no more ~0.9 s GPU wake‑up) |
+| One picture at 1918×1372 / full 3840×2748 | ~58 ms / 112–122 ms |
+| Find Shape / Compare Master | ~14 ms / 11.4 ms |
+| One PLC command (FP7, Ethernet) | ~4.6 ms |
+| Saving a 10 MP PNG | ~320 ms, in the background: 0 ms on the cycle |
+
+Actual times depend on the camera, resolution and the tools in the recipe. A trial on your own product pictures is the best guide.
+
+## Handling hard cases
+
+Defects a plain brightness threshold misses. These tools were built on real line pictures.
+
+| Problem | Approach | Tool |
+|---|---|---|
+| Black glossy plastic: sinks and warps invisible in the picture | Reads the lamp's reflection in the glossy face: flat gives a straight, even band; a sink bends, narrows or breaks it | Reflection Check |
+| A shape fault, or just a colour mark (gas, flow)? | 3–4 pictures lit from different sides (photometric stereo): a dent changes with lamp direction, a colour mark doesn't | Light Fusion |
+| Short shots and flash among harmless gas marks | Compares outline and roughness with good parts, which gloss and lamp angle don't change | Edge Integrity, Surface Check |
+| Hairline cracks 1–4 px wide that fade in and out | Looks for thin lines, not dark pixels, and follows them along their length; dust is not a crack | Crack Tracer |
+| Dents on a grainy cast face under striped light | Finds the dent by its sharp, long, curved rim, unlike the stripes and the grain | Dent Detector |
+| Parts that shift and rotate | Locates by shape (little affected by lighting), with angle, scale, sub‑pixel; every region follows the part | Find Shape, Align Position |
+| Every area varies differently (edges, print, highlights) | Learns from 10–30 good parts, a limit for every pixel | Statistical Check |
+| Not enough defect pictures to train AI | The AI learns from OK pictures only; a heat map shows the anomaly and its area (mm²) | AI Anomaly, AI Teach |
+| Bent, short or missing pins; partly filled holes | Measures each pin: bend, length, tip position. Holes: centre and diameter to 0.1 px | Pin Alignment, Hole Check |
+
+## Production reliability
+
+- **No lost Triggers:** a Trigger that arrives before Ready is held and handled the moment Ready returns.
+- **No blurred pictures:** Busy turns on only after every picture is taken, so the table never moves mid‑capture.
+- **Dark‑picture warning:** a lit shot that comes out dark (failed or missed lamp) is flagged at once.
+- **Camera loss reported to the PLC:** Error with an error code, cleared automatically when the camera is back.
+- **PLC auto‑reconnect** every 2 seconds, clearing stale outputs on reconnect.
+- **A slow disk never stops the line:** images are written on a background thread with a bounded queue; the PLC always gets the result first.
+- **Per‑cycle log:** a timing line per cycle (Trigger, capture, Busy, verdict, Ready) and PLC link statistics every minute.
+- **Over 3,500 automated tests** covering tools, PLCs, cameras and AI.
+
+## Specifications
+
+**Windows PC**
+
+| | |
+|---|---|
+| OS | Windows 10 / 11, 64‑bit |
+| Free disk | ≥ 15 GB |
+| GPU | NVIDIA, driver ≥ 560 (CUDA 12.6), optional; without one, AI runs on the CPU (slower) |
+| Internet | Not needed: AI weights ship in the installer |
+| Install | No admin rights needed; built‑in `--selfcheck` |
+| Running on the line | Dell Precision 7680 · RTX 2000 Ada Laptop 8 GB |
+
+**NVIDIA Jetson:** Jetson Orin, JetPack 6.x (L4T R36, CUDA 12.6). `.tar.gz` aarch64 package, menu entry without root. Recipes are shared with Windows, both ways. Basler USB3 cameras need `usbcore.usbfs_memory_mb=1000`.
+
+**Cameras**
+
+| | |
+|---|---|
+| Basler | ace USB3 / GigE (pylon); in use: acA3800‑14uc 10 MP |
+| FLIR / Teledyne | Spinnaker |
+| USB / UVC | DirectShow (Windows) · V4L2 (Linux) |
+| Stations | Up to 4 per PC; several shots each, one lighting mode per shot |
+| Resolution | Up to full sensor; hardware binning/ROI for speed |
+| Calibration | mm/pixel with sub‑pixel edges (on the line: 0.0718 mm/px); line, servo, stereo 3D |
+
+**PLC and signals**
+
+| | |
+|---|---|
+| KEYENCE KV‑8000 | Host Link · UDP |
+| Panasonic FP7 | MEWTOCOL · TCP |
+| Mitsubishi | MC protocol · TCP |
+| Omron | FINS · UDP |
+| Other PLCs | Modbus TCP |
+| Handshake | Trigger · Ready · Busy · OK · NG · ResultACK · Error |
+| Registers | Result code, error code, defect type, processing time |
+| Lighting | Switched per shot through PLC outputs |
+
+**Data:** images saved as PNG or JPG by OK/NG, date, shift, station; SQLite database, CSV export; defect Pareto, SPC (Cpk); recipe versioning and release; audit log; backup and restore.
 
 ## Licensing and activation
 

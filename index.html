@@ -140,7 +140,7 @@ html[lang="en"] [data-l="vi"]{display:none!important}
 @keyframes mq{to{transform:translateX(-50%)}}
 
 /* sections */
-section{padding:110px 0;position:relative}
+section{padding:110px 0;position:relative;scroll-margin-top:40px}
 .head{max-width:760px;margin:0 auto 56px;text-align:center}
 .kick{display:inline-block;font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px}
 h2{text-wrap:balance;font-size:clamp(28px,3.8vw,44px);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:800}
@@ -284,6 +284,63 @@ footer{border-top:1px solid var(--line);padding:32px 0 40px;color:var(--dim);fon
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
 footer a{color:var(--muted)}
 
+
+/* performance */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.kpi{padding:24px;border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(180deg,var(--surface),rgba(14,22,34,.4))}
+.kpi b{display:block;font-size:42px;line-height:1;font-weight:800;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.kpi b small{font-size:18px;font-weight:700}
+.kpi span{display:block;color:var(--muted);font-size:14px;margin-top:10px}
+@media (max-width:900px){.kpis{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.kpis{grid-template-columns:1fr}}
+.tl{border:1px solid var(--line);border-radius:var(--r);background:var(--bg2);padding:22px 22px 30px;margin-bottom:28px}
+.tl-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:15px}
+.tl-head .mono{color:var(--dim);font-size:13px}
+.tl-bar{display:flex;height:44px;border-radius:10px;overflow:hidden;gap:2px}
+.tl-bar i{flex:0 0 var(--w);background:var(--c);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
+.tl-marks,.tl-rot{position:relative;height:22px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.tl-marks span{position:absolute;top:6px;transform:translateX(-50%);white-space:nowrap}
+.tl-marks span:first-child{transform:none}.tl-marks span:last-child{transform:translateX(-100%)}
+.tl-rot>span{position:absolute;top:6px;border-top:2px dashed rgba(245,158,11,.6);padding-top:4px;text-align:center;color:#fbbf24;font-family:inherit}
+@media (max-width:640px){.tl-bar i{font-size:0}.tl-marks span:nth-child(2){display:none}.tl-rot>span{left:auto!important;right:0;width:auto!important;min-width:42.5%;white-space:nowrap;font-size:10.5px}}
+.perf-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px}
+.ptable,.pnotes{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:24px}
+.ptable h3,.pnotes h3{margin:0 0 14px;font-size:17px}
+.ptable table{width:100%;border-collapse:collapse;font-size:14.5px}
+.ptable th,.ptable td{padding:9px 0;border-top:1px solid var(--line);text-align:left;font-weight:500}
+.ptable th{color:var(--muted);padding-right:12px}
+.ptable td{text-align:right;font-family:var(--mono);font-size:13.5px;white-space:nowrap}
+.ptable td em{display:block;font-style:normal;color:var(--dim);font-size:11.5px}
+.pnotes ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.pnotes li{color:var(--muted);font-size:14.5px;padding-left:22px;position:relative}
+.pnotes li::before{content:"";position:absolute;left:2px;top:8px;width:8px;height:8px;border-radius:2px;background:var(--cyan)}
+.pnotes b{color:var(--ink);font-weight:600}
+.ref{color:var(--dim);font-size:13px;text-align:center;margin:18px 0 0;font-family:var(--mono)}
+@media (max-width:900px){.perf-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* hard cases */
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.case{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:22px;display:flex;flex-direction:column;transition:border-color .3s,transform .3s}
+.case:hover{border-color:var(--line2);transform:translateY(-3px)}
+.case .q{font-weight:700;font-size:16px;line-height:1.4;padding-left:14px;border-left:3px solid var(--ng);margin-bottom:12px}
+.case p{margin:0 0 16px;color:var(--muted);font-size:14.5px;flex:1}
+.case p b{color:var(--ink);font-weight:600}
+.case .t{align-self:flex-start;font-family:var(--mono);font-size:12px;color:#4ade80;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);padding:4px 10px;border-radius:7px}
+@media (max-width:980px){.cases{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.cases{grid-template-columns:1fr}}
+
+/* specs */
+.specs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.spec{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:24px}
+.spec.wide{grid-column:span 2}
+.spec h3{margin:0 0 12px;font-size:17px;display:flex;align-items:center;gap:10px}
+.spec h3 svg{width:20px;height:20px;color:var(--cyan)}
+.spec dl{margin:0;display:grid;grid-template-columns:minmax(120px,38%) 1fr}
+.spec dt,.spec dd{padding:9px 0;border-top:1px solid var(--line);font-size:14.5px;margin:0;min-width:0;overflow-wrap:anywhere}
+.spec dt{color:var(--muted);padding-right:12px}
+.spec.wide dl{grid-template-columns:minmax(120px,22%) 1fr}
+@media (max-width:820px){.specs{grid-template-columns:minmax(0,1fr)}.spec.wide{grid-column:auto}.spec.wide dl{grid-template-columns:minmax(110px,38%) 1fr}}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .js .rv{opacity:1;transform:none}
@@ -315,9 +372,10 @@ footer a{color:var(--muted)}
   <div class="wrap">
     <a class="brand" href="#top"><img src="images/logo.png" alt="">AI Vision OS</a>
     <nav>
-      <a class="hm" href="#how"><span data-l="vi">Cách hoạt động</span><span data-l="en">How it works</span></a>
+      <a class="hm" href="#performance"><span data-l="vi">Hiệu năng</span><span data-l="en">Performance</span></a>
+      <a class="hm" href="#cases"><span data-l="vi">Trường hợp khó</span><span data-l="en">Hard cases</span></a>
       <a class="hm" href="#features"><span data-l="vi">Tính năng</span><span data-l="en">Features</span></a>
-      <a class="hm" href="#tools"><span data-l="vi">Thư viện tool</span><span data-l="en">Tools</span></a>
+      <a class="hm" href="#specs"><span data-l="vi">Thông số</span><span data-l="en">Specs</span></a>
       <a class="hm" href="#faq">FAQ</a>
       <a class="cta-sm" href="#contact"><span data-l="vi">Liên hệ</span><span data-l="en">Contact</span></a>
       <button class="lang" id="lang" type="button" aria-label="Language">EN</button>
@@ -457,6 +515,98 @@ footer a{color:var(--muted)}
   </div>
 </section>
 
+<!-- PERFORMANCE -->
+<section id="performance" style="padding-top:40px">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Hiệu năng thực tế</span><span data-l="en">Real‑world performance</span></span>
+      <h2><span data-l="vi">Số đo trên dây chuyền đang chạy</span><span data-l="en">Measured on a running production line</span></h2>
+      <p><span data-l="vi">Line 4 trạm, mỗi mặt sản phẩm chụp 2 ảnh (đèn sáng và đèn tối), đo tháng 9–10/2026. Thời gian thực tế phụ thuộc camera, độ phân giải và số tool trong recipe.</span><span data-l="en">A 4‑station line, two pictures per product face (bright and dark lighting), measured Sep–Oct 2026. Actual times depend on the camera, resolution and the tools in the recipe.</span></p>
+    </div>
+    <div class="kpis">
+      <div class="kpi rv"><b>~400<small> ms</small></b><span data-l="vi">Trigger → Ready cho một mặt, gồm 2 lần chụp và toàn bộ tool</span><span data-l="en">Trigger → Ready per face, including 2 pictures and every tool</span></div>
+      <div class="kpi rv d1"><b>~230<small> ms</small></b><span data-l="vi">sau Trigger là bàn xoay được: ảnh chụp xong mới bật Busy</span><span data-l="en">after Trigger the table may move: Busy turns on only once pictures are taken</span></div>
+      <div class="kpi rv d2"><b>~95<small> ms</small></b><span data-l="vi">chạy mọi tool của một mặt, trong lúc bàn đang xoay</span><span data-l="en">to run every tool of a face, while the table turns</span></div>
+      <div class="kpi rv d3"><b>~12<small> ms</small></b><span data-l="vi">một ảnh qua AI YOLO segment trên GPU (CUDA graph)</span><span data-l="en">per picture through YOLO segmentation on the GPU (CUDA graph)</span></div>
+    </div>
+
+    <div class="tl rv" aria-label="Cycle timeline">
+      <div class="tl-head"><b><span data-l="vi">Một chu kỳ, tính từ lúc PLC bật Trigger</span><span data-l="en">One cycle, from the moment the PLC raises Trigger</span></b><span class="mono">0 → 400 ms</span></div>
+      <div class="tl-bar">
+        <i style="--w:13.75%;--c:#334155" title="~55 ms"><span data-l="vi">Thấy Trigger</span><span data-l="en">Trigger seen</span></i>
+        <i style="--w:5%;--c:#475569" title="~20 ms"></i>
+        <i style="--w:17.5%;--c:#0ea5e9" title="~70 ms"><span data-l="vi">Ảnh sáng</span><span data-l="en">Bright shot</span></i>
+        <i style="--w:18.75%;--c:#6366f1" title="~75 ms"><span data-l="vi">Ảnh tối</span><span data-l="en">Dark shot</span></i>
+        <i style="--w:2.5%;--c:#f59e0b" title="Busy ON"></i>
+        <i style="--w:23.75%;--c:#22c55e" title="~95 ms"><span data-l="vi">Chạy tool</span><span data-l="en">Tools</span></i>
+        <i style="--w:18.75%;--c:#14532d" title="~75 ms"><span data-l="vi">Kết quả → PLC</span><span data-l="en">Result → PLC</span></i>
+      </div>
+      <div class="tl-marks"><span style="left:0">0</span><span style="left:57.5%">Busy ON ~230 ms</span><span style="left:100%">Ready ~400 ms</span></div>
+      <div class="tl-rot"><span style="left:57.5%;width:42.5%"><span data-l="vi">bàn xoay sang mặt tiếp theo</span><span data-l="en">table turns to the next face</span></span></div>
+    </div>
+
+    <div class="perf-grid">
+      <div class="ptable rv">
+        <h3><span data-l="vi">Chi tiết từng bước</span><span data-l="en">Step by step</span></h3>
+        <table>
+          <tr><th><span data-l="vi">Chụp 1 ảnh 1918×1372</span><span data-l="en">One picture, 1918×1372</span></th><td>~58 ms</td></tr>
+          <tr><th><span data-l="vi">Chụp 1 ảnh full 3840×2748</span><span data-l="en">One full‑res picture, 3840×2748</span></th><td>112–122 ms</td></tr>
+          <tr><th>Find Shape</th><td>~14 ms <em><span data-l="vi">từ ~60 ms</span><span data-l="en">was ~60 ms</span></em></td></tr>
+          <tr><th>Compare Master</th><td>11.4 ms</td></tr>
+          <tr><th><span data-l="vi">Mạng YOLOv8n‑seg, 1 ảnh</span><span data-l="en">YOLOv8n‑seg network, 1 picture</span></th><td>2.0 ms <em><span data-l="vi">từ 28.4 ms</span><span data-l="en">was 28.4 ms</span></em></td></tr>
+          <tr><th><span data-l="vi">Mạng YOLOv8n‑seg, 4 ảnh</span><span data-l="en">YOLOv8n‑seg network, 4 pictures</span></th><td>6.8 ms</td></tr>
+          <tr><th><span data-l="vi">AI sau khi máy nghỉ 12–30 s</span><span data-l="en">AI after 12–30 s idle</span></th><td>26–28 ms <em><span data-l="vi">thay vì ~0,9 s</span><span data-l="en">instead of ~0.9 s</span></em></td></tr>
+          <tr><th><span data-l="vi">Một lệnh PLC (FP7, Ethernet)</span><span data-l="en">One PLC command (FP7, Ethernet)</span></th><td>~4.6 ms</td></tr>
+          <tr><th><span data-l="vi">Lưu ảnh 10 MP PNG</span><span data-l="en">Saving a 10 MP PNG</span></th><td>~320 ms <em><span data-l="vi">chạy nền, 0 ms trên chu kỳ</span><span data-l="en">in background, 0 ms on the cycle</span></em></td></tr>
+        </table>
+      </div>
+      <div class="pnotes rv d1">
+        <h3><span data-l="vi">Đã tối ưu những gì</span><span data-l="en">What was optimised</span></h3>
+        <ul>
+          <li><span data-l="vi"><b>Busy bật sau khi chụp xong</b>, xử lý ảnh trong lúc bàn xoay: bàn không phải đứng chờ tool.</span><span data-l="en"><b>Busy turns on once pictures are taken</b>; processing runs while the table turns, so it never waits for tools.</span></li>
+          <li><span data-l="vi"><b>Settle đèn 200 → 5 ms</b>: mỗi mặt nhanh hơn ~390 ms, ảnh vẫn đủ sáng.</span><span data-l="en"><b>Light settle 200 → 5 ms</b>: ~390 ms faster per face, pictures still bright enough.</span></li>
+          <li><span data-l="vi"><b>CUDA graph</b>: mạng AI chạy bằng 1 lệnh GPU thay vì hàng trăm, nhanh ×14, kết quả giống hệt.</span><span data-l="en"><b>CUDA graph</b>: the AI network runs as one GPU launch instead of hundreds, ×14 faster, identical output.</span></li>
+          <li><span data-l="vi"><b>Giữ GPU luôn sẵn sàng</b>: không còn chậm ~0,9 s ở sản phẩm đầu tiên sau khi line nghỉ.</span><span data-l="en"><b>GPU kept awake</b>: no more ~0.9 s delay on the first part after the line pauses.</span></li>
+          <li><span data-l="vi"><b>Ghi kết quả cho PLC trước</b>, lưu ảnh và dữ liệu sau: PLC nhận OK/NG sớm hơn.</span><span data-l="en"><b>Result to the PLC first</b>, images and data afterwards: the PLC gets OK/NG sooner.</span></li>
+          <li><span data-l="vi"><b>Giảm độ phân giải ngay trên cảm biến</b> (binning/ROI phần cứng) thay vì thu nhỏ bằng phần mềm.</span><span data-l="en"><b>Resolution reduced on the sensor</b> (hardware binning/ROI) instead of in software.</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="ref rv"><span data-l="vi">Cấu hình đo:</span><span data-l="en">Measured on:</span> Dell Precision 7680 · NVIDIA RTX 2000 Ada Laptop GPU 8 GB · 4 × Basler acA3800‑14uc (10 MP, USB3) · Panasonic FP7</p>
+  </div>
+</section>
+
+<!-- HARD CASES -->
+<section id="cases" style="padding-top:40px">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Trường hợp khó</span><span data-l="en">Hard cases</span></span>
+      <h2><span data-l="vi">Những lỗi mà ngưỡng sáng tối thông thường bỏ sót</span><span data-l="en">Defects a plain brightness threshold misses</span></h2>
+      <p><span data-l="vi">Các tool dưới đây được xây dựng từ ảnh thật trên line, cho những bài toán mà chỉ so độ sáng là không đủ.</span><span data-l="en">These tools were built on real line pictures, for problems where comparing brightness is not enough.</span></p>
+    </div>
+    <div class="cases">
+      <div class="case rv"><div class="q"><span data-l="vi">Nhựa đen bóng: vết lõm, cong vênh nhìn ảnh không thấy</span><span data-l="en">Black glossy plastic: sinks and warps invisible in the picture</span></div>
+        <p><span data-l="vi">Bề mặt bóng như gương. Tool đọc <b>vệt đèn phản chiếu</b>: mặt phẳng cho vệt thẳng đều, chỗ lõm làm vệt cong, hẹp, đứt.</span><span data-l="en">A glossy face is a mirror. The tool reads <b>the lamp's reflection</b>: a flat face gives a straight, even band; a sink bends, narrows or breaks it.</span></p><div class="t">Reflection Check</div></div>
+      <div class="case rv d1"><div class="q"><span data-l="vi">Lỗi hình dạng hay chỉ là vết màu?</span><span data-l="en">A shape fault, or just a colour mark?</span></div>
+        <p><span data-l="vi">Chụp 3–4 ảnh với đèn từ các phía. Chỗ lõm sáng dưới đèn này, tối dưới đèn kia; vết khí, vết chảy đổi như nhau dưới mọi đèn.</span><span data-l="en">3–4 pictures lit from different sides. A dent is bright under one lamp and dark under the other; gas and flow marks change the same under every lamp.</span></p><div class="t">Light Fusion · photometric stereo</div></div>
+      <div class="case rv d2"><div class="q"><span data-l="vi">Thiếu liệu, bavia giữa vết khí vô hại</span><span data-l="en">Short shots and flash among harmless gas marks</span></div>
+        <p><span data-l="vi">So <b>đường viền</b> và <b>độ nhám</b> với hàng tốt, thứ mà độ bóng và góc đèn không làm thay đổi: thiếu cạnh là thiếu liệu, thừa cạnh là bavia.</span><span data-l="en">Compares <b>outline</b> and <b>roughness</b> with good parts, which gloss and lamp angle don't change: a missing edge is a short shot, an extra edge is flash.</span></p><div class="t">Edge Integrity · Surface Check</div></div>
+      <div class="case rv"><div class="q"><span data-l="vi">Vết nứt chân tóc 1–4 px, lúc rõ lúc mờ</span><span data-l="en">Hairline cracks 1–4 px wide that fade in and out</span></div>
+        <p><span data-l="vi">Tìm <b>đường mảnh</b> thay vì điểm tối và bám theo cả chiều dài, kể cả đoạn mờ, nên không nhầm bụi thành lỗi.</span><span data-l="en">Looks for <b>thin lines</b>, not dark pixels, and follows them along their length, faint stretches too, so dust is not mistaken for a crack.</span></p><div class="t">Crack Tracer</div></div>
+      <div class="case rv d1"><div class="q"><span data-l="vi">Vết móp trên bề mặt đúc, đèn sọc, hạt thô</span><span data-l="en">Dents on a grainy cast face under striped light</span></div>
+        <p><span data-l="vi">Sọc đèn còn tương phản hơn cả vết móp. Tool nhận ra vết móp nhờ <b>mép</b> của nó: sắc, dài, cong, khác sọc đèn và hạt bề mặt.</span><span data-l="en">The stripes outshine the dent. The tool finds the dent by its <b>rim</b>: sharp, long and curved, unlike the stripes and the grain.</span></p><div class="t">Dent Detector</div></div>
+      <div class="case rv d2"><div class="q"><span data-l="vi">Sản phẩm lệch vị trí, xoay góc</span><span data-l="en">Parts that shift and rotate</span></div>
+        <p><span data-l="vi">Định vị theo <b>hình dạng</b> (ít phụ thuộc ánh sáng), có góc xoay, tỉ lệ và sub‑pixel; mọi vùng kiểm tra phía sau tự đi theo sản phẩm.</span><span data-l="en">Locates by <b>shape</b> (little affected by lighting), with angle, scale and sub‑pixel; every downstream region follows the part.</span></p><div class="t">Find Shape · Align Position</div></div>
+      <div class="case rv"><div class="q"><span data-l="vi">Mỗi vùng dao động khác nhau</span><span data-l="en">Every area varies differently</span></div>
+        <p><span data-l="vi">Cạnh, chữ in, vùng đèn chiếu dao động nhiều; mặt phẳng thì không. Học 10–30 hàng tốt, <b>mỗi pixel một ngưỡng riêng</b>.</span><span data-l="en">Edges, print and highlights vary a lot; flat faces don't. Learns from 10–30 good parts, <b>a limit for every pixel</b>.</span></p><div class="t">Statistical Check</div></div>
+      <div class="case rv d1"><div class="q"><span data-l="vi">Không có đủ ảnh lỗi để huấn luyện AI</span><span data-l="en">Not enough defect pictures to train AI</span></div>
+        <p><span data-l="vi">AI chỉ học từ <b>ảnh hàng OK</b>; khi gặp hàng lạ, heat map chỉ ra vùng bất thường và diện tích của nó (mm²).</span><span data-l="en">The AI learns from <b>OK pictures only</b>; on an unusual part, a heat map shows where it differs and how large the area is (mm²).</span></p><div class="t">AI Anomaly · AI Teach</div></div>
+      <div class="case rv d2"><div class="q"><span data-l="vi">Chân connector cong, ngắn, thiếu; lỗ bị lấp</span><span data-l="en">Bent, short or missing pins; partly filled holes</span></div>
+        <p><span data-l="vi">Đo <b>từng chân</b>: độ cong, chiều dài, vị trí đầu chân. Lỗ: tâm và đường kính tới <b>0,1 px</b>, tỉ lệ chu vi còn thấy được.</span><span data-l="en">Measures <b>each pin</b>: bend, length, tip position. Holes: centre and diameter to <b>0.1 px</b>, and how much of the rim is visible.</span></p><div class="t">Pin Alignment · Hole Check</div></div>
+    </div>
+  </div>
+</section>
+
 <!-- FEATURES -->
 <section id="features">
   <div class="wrap">
@@ -528,20 +678,77 @@ footer a{color:var(--muted)}
   </div>
 </section>
 
-<!-- HARDWARE -->
-<section id="hardware" style="padding-top:40px">
+<!-- SPECS -->
+<section id="specs" style="padding-top:40px">
   <div class="wrap">
     <div class="head rv">
-      <span class="kick"><span data-l="vi">Phần cứng</span><span data-l="en">Hardware</span></span>
-      <h2><span data-l="vi">Dùng thiết bị có sẵn trong nhà máy</span><span data-l="en">Works with the equipment you already have</span></h2>
+      <span class="kick"><span data-l="vi">Thông số kỹ thuật</span><span data-l="en">Specifications</span></span>
+      <h2><span data-l="vi">Phần cứng và kết nối</span><span data-l="en">Hardware and connectivity</span></h2>
+      <p><span data-l="vi">Dùng thiết bị có sẵn trong nhà máy. Cần tư vấn cấu hình cho số camera của bạn, hãy liên hệ.</span><span data-l="en">Works with the equipment you already have. For a configuration sized to your cameras, get in touch.</span></p>
     </div>
-    <div class="hw">
-      <div class="card rv"><div class="ic"><svg><use href="#i-cam"/></svg></div><h3>Camera</h3>
-        <ul><li>Basler<span>USB3 · GigE</span></li><li>FLIR / Teledyne<span>Spinnaker</span></li><li>USB / UVC<span>Windows · Linux</span></li><li><span data-l="vi">Thư mục ảnh</span><span data-l="en">Image folder</span><span data-l="vi">camera ảo</span><span data-l="en">virtual</span></li></ul></div>
-      <div class="card a rv d1"><div class="ic"><svg><use href="#i-plc"/></svg></div><h3>PLC</h3>
-        <ul><li>KEYENCE KV‑8000<span>Host Link</span></li><li>Mitsubishi<span>MC protocol</span></li><li>Omron<span>FINS</span></li><li>Panasonic FP7<span>MEWTOCOL</span></li><li><span data-l="vi">Các PLC khác</span><span data-l="en">Other PLCs</span><span>Modbus TCP</span></li></ul></div>
-      <div class="card g rv d2"><div class="ic"><svg><use href="#i-shield"/></svg></div><h3><span data-l="vi">Máy tính</span><span data-l="en">Computer</span></h3>
-        <ul><li>Windows 10 / 11<span>x64</span></li><li>NVIDIA Jetson Orin<span>JetPack 6</span></li><li><span data-l="vi">GPU NVIDIA</span><span data-l="en">NVIDIA GPU</span><span data-l="vi">CUDA · không bắt buộc</span><span data-l="en">CUDA · optional</span></li></ul></div>
+    <div class="specs">
+      <div class="spec rv"><h3><svg><use href="#i-shield"/></svg><span data-l="vi">Máy tính Windows</span><span data-l="en">Windows PC</span></h3><dl>
+        <dt><span data-l="vi">Hệ điều hành</span><span data-l="en">OS</span></dt><dd>Windows 10 / 11, 64‑bit</dd>
+        <dt><span data-l="vi">Ổ đĩa trống</span><span data-l="en">Free disk</span></dt><dd>≥ 15 GB</dd>
+        <dt>GPU</dt><dd><span data-l="vi">NVIDIA, driver ≥ 560 (CUDA 12.6), không bắt buộc</span><span data-l="en">NVIDIA, driver ≥ 560 (CUDA 12.6), optional</span></dd>
+        <dt><span data-l="vi">Không có GPU</span><span data-l="en">Without a GPU</span></dt><dd><span data-l="vi">AI tự chạy bằng CPU (chậm hơn)</span><span data-l="en">AI runs on the CPU (slower)</span></dd>
+        <dt>Internet</dt><dd><span data-l="vi">Không cần, trọng số AI có sẵn trong bộ cài</span><span data-l="en">Not needed, AI weights ship in the installer</span></dd>
+        <dt><span data-l="vi">Cài đặt</span><span data-l="en">Install</span></dt><dd><span data-l="vi">Cài được không cần quyền admin; có lệnh tự kiểm tra --selfcheck</span><span data-l="en">No admin rights needed; built‑in --selfcheck</span></dd>
+        <dt><span data-l="vi">Đang chạy trên line</span><span data-l="en">Running on the line</span></dt><dd>Dell Precision 7680 · RTX 2000 Ada Laptop 8 GB</dd>
+      </dl></div>
+      <div class="spec rv d1"><h3><svg><use href="#i-ai"/></svg>NVIDIA Jetson</h3><dl>
+        <dt><span data-l="vi">Thiết bị</span><span data-l="en">Device</span></dt><dd>Jetson Orin</dd>
+        <dt><span data-l="vi">Phần mềm hệ thống</span><span data-l="en">System software</span></dt><dd>JetPack 6.x (L4T R36, CUDA 12.6)</dd>
+        <dt><span data-l="vi">Gói cài</span><span data-l="en">Package</span></dt><dd><span data-l="vi">.tar.gz aarch64, thêm menu không cần root</span><span data-l="en">.tar.gz aarch64, menu entry without root</span></dd>
+        <dt>Recipe</dt><dd><span data-l="vi">Dùng chung với Windows, cả hai chiều</span><span data-l="en">Shared with Windows, both ways</span></dd>
+        <dt>Basler USB3</dt><dd><span data-l="vi">Cần usbcore.usbfs_memory_mb=1000</span><span data-l="en">Needs usbcore.usbfs_memory_mb=1000</span></dd>
+      </dl></div>
+      <div class="spec rv"><h3><svg><use href="#i-cam"/></svg>Camera</h3><dl>
+        <dt>Basler</dt><dd><span data-l="vi">ace USB3 / GigE (pylon); đang chạy acA3800‑14uc 10 MP</span><span data-l="en">ace USB3 / GigE (pylon); in use: acA3800‑14uc 10 MP</span></dd>
+        <dt>FLIR / Teledyne</dt><dd>Spinnaker</dd>
+        <dt>USB / UVC</dt><dd>DirectShow (Windows) · V4L2 (Linux)</dd>
+        <dt><span data-l="vi">Số trạm</span><span data-l="en">Stations</span></dt><dd><span data-l="vi">Tới 4 trạm / máy, mỗi trạm nhiều shot, mỗi shot một chế độ đèn</span><span data-l="en">Up to 4 per PC, several shots each, one lighting mode per shot</span></dd>
+        <dt><span data-l="vi">Độ phân giải</span><span data-l="en">Resolution</span></dt><dd><span data-l="vi">Tới full sensor; giảm bằng binning/ROI phần cứng để chụp nhanh</span><span data-l="en">Up to full sensor; hardware binning/ROI for speed</span></dd>
+        <dt><span data-l="vi">Điều khiển</span><span data-l="en">Controls</span></dt><dd>Exposure · gain · frame rate · pixel format · trigger</dd>
+        <dt><span data-l="vi">Hiệu chuẩn</span><span data-l="en">Calibration</span></dt><dd><span data-l="vi">mm/pixel bắt cạnh sub‑pixel (ví dụ trên line: 0,0718 mm/px)</span><span data-l="en">mm/pixel with sub‑pixel edges (on the line: 0.0718 mm/px)</span></dd>
+      </dl></div>
+      <div class="spec rv d1"><h3><svg><use href="#i-plc"/></svg><span data-l="vi">PLC và tín hiệu</span><span data-l="en">PLC and signals</span></h3><dl>
+        <dt>KEYENCE KV‑8000</dt><dd>Host Link · UDP</dd>
+        <dt>Panasonic FP7</dt><dd>MEWTOCOL · TCP</dd>
+        <dt>Mitsubishi</dt><dd>MC protocol · TCP</dd>
+        <dt>Omron</dt><dd>FINS · UDP</dd>
+        <dt><span data-l="vi">PLC khác</span><span data-l="en">Other PLCs</span></dt><dd>Modbus TCP</dd>
+        <dt>Handshake</dt><dd>Trigger · Ready · Busy · OK · NG · ResultACK · Error</dd>
+        <dt><span data-l="vi">Thanh ghi</span><span data-l="en">Registers</span></dt><dd><span data-l="vi">Mã kết quả, mã lỗi, loại lỗi, thời gian xử lý</span><span data-l="en">Result code, error code, defect type, processing time</span></dd>
+        <dt><span data-l="vi">Đèn</span><span data-l="en">Lighting</span></dt><dd><span data-l="vi">Bật / đổi đèn theo từng shot qua ngõ ra PLC</span><span data-l="en">Switched per shot through PLC outputs</span></dd>
+      </dl></div>
+      <div class="spec wide rv"><h3><svg><use href="#i-chart"/></svg><span data-l="vi">Dữ liệu và truy xuất</span><span data-l="en">Data and traceability</span></h3><dl>
+        <dt><span data-l="vi">Lưu ảnh</span><span data-l="en">Images</span></dt><dd><span data-l="vi">PNG hoặc JPG; theo OK/NG, ngày, ca, trạm; ghi nền không làm chậm chu kỳ</span><span data-l="en">PNG or JPG; by OK/NG, date, shift, station; written in the background</span></dd>
+        <dt><span data-l="vi">Kết quả</span><span data-l="en">Results</span></dt><dd><span data-l="vi">Cơ sở dữ liệu SQLite, xuất CSV; Pareto lỗi, SPC (Cpk)</span><span data-l="en">SQLite database, CSV export; defect Pareto, SPC (Cpk)</span></dd>
+        <dt>Recipe</dt><dd><span data-l="vi">Quản lý phiên bản, Release; nhật ký thao tác; sao lưu và khôi phục</span><span data-l="en">Versioning and release; audit log; backup and restore</span></dd>
+        <dt><span data-l="vi">Log</span><span data-l="en">Logs</span></dt><dd><span data-l="vi">Một dòng thời gian cho mỗi chu kỳ (Trigger, chụp, Busy, kết quả, Ready) và thống kê đường truyền PLC mỗi phút</span><span data-l="en">A timing line per cycle (Trigger, capture, Busy, verdict, Ready) and PLC link statistics every minute</span></dd>
+      </dl></div>
+    </div>
+  </div>
+</section>
+
+<!-- RELIABILITY -->
+<section id="reliability" style="padding-top:40px">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="kick"><span data-l="vi">Ổn định sản xuất</span><span data-l="en">Production reliability</span></span>
+      <h2><span data-l="vi">Chạy cả ca không cần người canh</span><span data-l="en">Runs a whole shift unattended</span></h2>
+    </div>
+    <div class="why rv">
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Không mất Trigger</span><span data-l="en">No lost Triggers</span></h3><p><span data-l="vi">Trigger đến sớm khi máy chưa Ready được giữ lại và xử lý ngay khi Ready.</span><span data-l="en">A Trigger that arrives before Ready is held and handled the moment Ready returns.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Không ảnh mờ</span><span data-l="en">No blurred pictures</span></h3><p><span data-l="vi">Busy chỉ bật khi đã chụp xong mọi ảnh, nên bàn không xoay lúc đang chụp.</span><span data-l="en">Busy turns on only after every picture is taken, so the table never moves mid‑capture.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Báo khi ảnh tối</span><span data-l="en">Dark‑picture warning</span></h3><p><span data-l="vi">Ảnh có bật đèn mà ra tối (đèn hỏng, mất đèn) được cảnh báo ngay.</span><span data-l="en">A lit shot that comes out dark (failed or missed lamp) is flagged at once.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Mất camera, PLC biết ngay</span><span data-l="en">Camera loss reported to the PLC</span></h3><p><span data-l="vi">Rút camera: bật Error kèm mã lỗi cho PLC; cắm lại thì tự xóa. Recipe chưa gán cũng có mã riêng.</span><span data-l="en">Unplug a camera: Error with a code goes to the PLC; plug it back and it clears. An unassigned recipe has its own code.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Tự kết nối lại PLC</span><span data-l="en">PLC auto‑reconnect</span></h3><p><span data-l="vi">Mất kết nối thì thử lại mỗi 2 giây, xóa trạng thái cũ khi kết nối lại.</span><span data-l="en">Retries every 2 seconds and clears stale outputs on reconnect.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Ổ đĩa chậm không làm dừng line</span><span data-l="en">A slow disk never stops the line</span></h3><p><span data-l="vi">Ảnh ghi ở luồng nền với hàng đợi giới hạn; PLC luôn nhận kết quả trước.</span><span data-l="en">Images are written on a background thread with a bounded queue; the PLC always gets the result first.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Chế độ bảo trì</span><span data-l="en">Maintenance mode</span></h3><p><span data-l="vi">Đọc, bật, tắt từng tín hiệu PLC bằng tay để chạy thử khi lắp đặt và kiểm tra dây.</span><span data-l="en">Read, set and reset each PLC signal by hand for commissioning and wiring checks.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Recipe có phiên bản</span><span data-l="en">Versioned recipes</span></h3><p><span data-l="vi">Mỗi recipe có phiên bản và Release; nhật ký thao tác ghi lại ai đã làm gì.</span><span data-l="en">Each recipe has versions and releases; the audit log records who did what.</span></p></div>
+      <div><h3><svg><use href="#i-check"/></svg><span data-l="vi">Kiểm thử tự động</span><span data-l="en">Automated testing</span></h3><p><span data-l="vi">Phần mềm có hơn 3.500 bài kiểm thử tự động cho tool, PLC, camera và AI.</span><span data-l="en">The software has over 3,500 automated tests covering tools, PLCs, cameras and AI.</span></p></div>
     </div>
   </div>
 </section>
@@ -572,6 +779,14 @@ footer a{color:var(--muted)}
       <h2><span data-l="vi">Câu hỏi thường gặp</span><span data-l="en">Frequently asked questions</span></h2>
     </div>
     <div class="faq">
+      <details class="rv"><summary><span data-l="vi">Tốc độ xử lý bao nhiêu?</span><span data-l="en">How fast is it?</span></summary>
+        <p><span data-l="vi">Trên line đang chạy: khoảng 400 ms từ Trigger tới Ready cho một mặt sản phẩm, gồm 2 lần chụp ảnh 10 MP và toàn bộ tool; riêng phần tool khoảng 95 ms, chạy trong lúc bàn xoay. Một ảnh qua AI YOLO segment khoảng 12 ms trên GPU. Thời gian thực tế phụ thuộc camera, độ phân giải và recipe, nên nên chạy thử trên ảnh của bạn.</span><span data-l="en">On the running line: about 400 ms from Trigger to Ready per product face, including two 10 MP pictures and every tool; the tools alone take about 95 ms, while the table turns. One picture through YOLO segmentation takes about 12 ms on the GPU. Real times depend on camera, resolution and recipe, so a trial on your own pictures is the best guide.</span></p></details>
+      <details class="rv"><summary><span data-l="vi">Sản phẩm đặt lệch hoặc xoay thì sao?</span><span data-l="en">What if parts shift or rotate?</span></summary>
+        <p><span data-l="vi">Find Pattern / Find Shape tìm vị trí, góc xoay và tỉ lệ của sản phẩm (sub‑pixel), rồi Align Position cho mọi vùng kiểm tra phía sau đi theo sản phẩm. Find Shape khớp theo hình dạng nên ít bị ảnh hưởng bởi thay đổi ánh sáng.</span><span data-l="en">Find Pattern / Find Shape locate the part's position, angle and scale (sub‑pixel); Align Position then moves every downstream region with the part. Find Shape matches on shape, so lighting changes affect it little.</span></p></details>
+      <details class="rv"><summary><span data-l="vi">Chưa có ảnh hàng lỗi thì có dùng AI được không?</span><span data-l="en">Can I use AI without defect pictures?</span></summary>
+        <p><span data-l="vi">Được. AI Anomaly (qua AI Teach) chỉ cần ảnh hàng OK; khi gặp hàng khác thường, heat map chỉ ra vùng bất thường. Các tool Surface Check, Edge Integrity, Statistical Check cũng chỉ cần dạy bằng hàng tốt. Khi đã có ảnh lỗi, bạn có thể gán nhãn và huấn luyện YOLO để phân loại từng loại lỗi.</span><span data-l="en">Yes. AI Anomaly (via AI Teach) needs OK pictures only; an unusual part shows up on a heat map. Surface Check, Edge Integrity and Statistical Check are also taught with good parts. Once you have defect pictures, label them and train YOLO to classify each defect type.</span></p></details>
+      <details class="rv"><summary><span data-l="vi">Mất kết nối camera hoặc PLC thì sao?</span><span data-l="en">What if the camera or PLC disconnects?</span></summary>
+        <p><span data-l="vi">Camera mất kết nối: phần mềm bật Error kèm mã lỗi cho PLC và tự xóa khi camera được cắm lại. PLC mất kết nối: phần mềm thử lại mỗi 2 giây và xóa trạng thái cũ khi kết nối lại. Trigger đến sớm khi chưa Ready được giữ lại, không bị mất.</span><span data-l="en">Camera lost: the software raises Error with an error code to the PLC and clears it when the camera is back. PLC lost: it retries every 2 seconds and clears stale outputs on reconnect. A Trigger that arrives before Ready is held, not lost.</span></p></details>
       <details class="rv"><summary><span data-l="vi">Có bắt buộc phải có GPU không?</span><span data-l="en">Do I need a GPU?</span></summary>
         <p><span data-l="vi">Không. Mọi tính năng AI tự chạy bằng CPU khi máy không có GPU. Có GPU NVIDIA thì huấn luyện và chạy AI nhanh hơn nhiều.</span><span data-l="en">No. Every AI feature falls back to the CPU without a GPU. An NVIDIA GPU makes training and inference much faster.</span></p></details>
       <details class="rv"><summary><span data-l="vi">Bản quyền tính theo máy như thế nào?</span><span data-l="en">How does licensing work?</span></summary>
