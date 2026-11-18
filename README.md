@@ -13,6 +13,8 @@
 
 **Tiếng Việt** · [English](README.en.md)
 
+🌐 **Trang web:** https://hntan0104.github.io/AI-Vision-OS/
+
 <img src="images/recipe-builder.jpg" alt="Recipe Builder: quy trình kiểm tra dạng sơ đồ node" width="900">
 
 </div>
@@ -99,9 +101,8 @@ Ngoài ra:
 
 Để nhận bộ cài đặt, dùng thử, source code hoặc báo giá:
 
-> Gmail: hntan0104@gmail.com
-> Phone: +84822222979
-> 
+> 📧 Email: [hntan0104@gmail.com](mailto:hntan0104@gmail.com)<br>
+> 📞 Phone: [+84 822 222 979](tel:+84822222979)
 
 ---
 

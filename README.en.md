@@ -13,6 +13,8 @@
 
 [Tiếng Việt](README.md) · **English**
 
+🌐 **Website:** https://hntan0104.github.io/AI-Vision-OS/?lang=en
+
 <img src="images/recipe-builder.jpg" alt="Recipe Builder: an inspection workflow as a node graph" width="900">
 
 </div>
@@ -99,8 +101,8 @@ Also:
 
 For the installer, trial, source code, quote:
 
-> Gmail: hntan0104@gmail.com
-> Phone: +84822222979
+> 📧 Email: [hntan0104@gmail.com](mailto:hntan0104@gmail.com)<br>
+> 📞 Phone: [+84 822 222 979](tel:+84822222979)
 
 ---
 

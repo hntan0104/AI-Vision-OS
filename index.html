@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Vision OS: phần mềm kiểm tra ngoại quan (machine vision) cho nhà máy</title>
+<meta name="description" content="AI Vision OS là phần mềm machine vision kiểm tra ngoại quan cho dây chuyền sản xuất: kéo-thả quy trình không cần code, 126 tool đo lường, tìm lỗi, OCR, AI YOLO, kết nối camera Basler/FLIR và PLC KEYENCE, Mitsubishi, Omron, Panasonic. Chạy trên Windows và NVIDIA Jetson.">
+<meta name="keywords" content="machine vision, phần mềm thị giác máy, kiểm tra ngoại quan, AOI, phát hiện lỗi sản phẩm, defect detection, visual inspection, YOLO, PLC, KEYENCE, Basler, NVIDIA Jetson, OCR, smart factory, Việt Nam">
+<link rel="canonical" href="https://hntan0104.github.io/AI-Vision-OS/">
+<link rel="icon" href="images/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AI Vision OS">
+<meta property="og:title" content="AI Vision OS: phần mềm kiểm tra ngoại quan cho dây chuyền sản xuất">
+<meta property="og:description" content="Kéo-thả quy trình kiểm tra không cần code. 126 tool đo lường, tìm lỗi, OCR, AI YOLO. Camera Basler/FLIR, PLC KEYENCE, Mitsubishi, Omron. Windows và NVIDIA Jetson.">
+<meta property="og:url" content="https://hntan0104.github.io/AI-Vision-OS/">
+<meta property="og:image" content="https://hntan0104.github.io/AI-Vision-OS/images/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hntan0104.github.io/AI-Vision-OS/images/social-preview.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AI Vision OS",
+ "applicationCategory":"BusinessApplication","applicationSubCategory":"Machine vision / industrial visual inspection",
+ "operatingSystem":"Windows 10, Windows 11, Linux (NVIDIA Jetson, JetPack 6)",
+ "description":"No-code industrial visual inspection software: drag-and-drop inspection workflows, 126 measurement, defect, OCR and AI tools, camera and PLC integration.",
+ "image":"https://hntan0104.github.io/AI-Vision-OS/images/social-preview.png",
+ "url":"https://hntan0104.github.io/AI-Vision-OS/",
+ "author":{"@type":"Person","name":"hntan0104","email":"hntan0104@gmail.com"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f8fb; --surface:#ffffff; --ink:#111821; --muted:#5a6878; --line:#e3e8ef;
+  --accent:#2f6fb5; --accent-ink:#ffffff; --green:#5f9e00; --hero:#111821; --hero-ink:#eef3f8; --hero-muted:#9fb0c2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e141b; --surface:#151d26; --ink:#e8eef4; --muted:#93a3b4; --line:#243140;
+    --accent:#5aa2ef; --accent-ink:#0b1118; --green:#8bc53f; --hero:#0a0f15; --hero-ink:#eef3f8; --hero-muted:#93a3b4;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--accent)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+html:not([lang="en"]) [data-l="en"]{display:none!important}
+html[lang="en"] [data-l="vi"]{display:none!important}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--hero) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--hero-ink);text-decoration:none;font-weight:700}
+.brand img{width:32px;height:32px;border-radius:8px}
+.nav nav{margin-left:auto;display:flex;gap:4px;align-items:center}
+.nav nav a{color:var(--hero-muted);text-decoration:none;font-size:14px;padding:6px 10px;border-radius:6px}
+.nav nav a:hover{color:var(--hero-ink)}
+.lang{background:transparent;border:1px solid rgba(255,255,255,.2);color:var(--hero-ink);border-radius:6px;padding:5px 10px;font:inherit;font-size:13px;cursor:pointer;margin-left:6px}
+@media (max-width:720px){.nav nav a.hide-sm{display:none}}
+
+/* hero */
+.hero{background:var(--hero);color:var(--hero-ink);padding:64px 0 0;overflow:hidden}
+.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.15;margin:0 0 16px;font-weight:800;letter-spacing:-.01em;max-width:820px}
+.hero .lead{font-size:clamp(16px,2vw,19px);color:var(--hero-muted);max-width:720px;margin:0 0 28px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:44px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border:1px solid rgba(255,255,255,.25);color:var(--hero-ink)}
+.flow{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;color:var(--hero-muted);display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-bottom:36px}
+.flow span{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:4px 10px;border-radius:999px;color:var(--hero-ink)}
+.flow i{font-style:normal;opacity:.6}
+.hero-shot{border-radius:12px 12px 0 0;box-shadow:0 -10px 60px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.08);border-bottom:0}
+
+/* sections */
+section{padding:72px 0}
+.kicker{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 8px}
+h2{font-size:clamp(24px,3.4vw,34px);line-height:1.2;margin:0 0 12px;font-weight:800}
+.sub{color:var(--muted);max-width:720px;margin:0 0 36px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:-1px}
+.stats div{background:var(--surface);padding:22px 20px}
+.stats b{display:block;font-size:30px;font-weight:800;line-height:1.1}
+.stats span{color:var(--muted);font-size:14px}
+@media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
+.card h3{margin:0 0 6px;font-size:17px}
+.card p{margin:0;color:var(--muted);font-size:15px}
+
+.split{display:grid;grid-template-columns:1fr 1.25fr;gap:40px;align-items:center;padding:28px 0}
+.split.rev{grid-template-columns:1.25fr 1fr}
+.split.rev .txt{order:2}
+.split img{border-radius:10px;border:1px solid var(--line);box-shadow:0 12px 40px rgba(17,24,33,.12)}
+.split h3{font-size:22px;margin:0 0 10px}
+.split ul{margin:0;padding-left:18px;color:var(--muted)}
+.split li{margin:4px 0}
+@media (max-width:820px){.split,.split.rev{grid-template-columns:1fr;gap:20px}.split.rev .txt{order:0}}
+
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{width:30%;font-weight:700;white-space:nowrap}
+td{color:var(--muted)}
+tr:last-child th,tr:last-child td{border-bottom:0}
+@media (max-width:620px){th,td{display:block;width:auto}th{border-bottom:0;padding-bottom:2px}td{padding-top:0}}
+
+.contact{background:var(--hero);color:var(--hero-ink);border-radius:16px;padding:44px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center}
+.contact h2{color:var(--hero-ink)}
+.contact p{color:var(--hero-muted);margin:0}
+.contact .links{display:flex;flex-direction:column;gap:10px}
+.contact .links a{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:14px 18px;border-radius:10px;color:var(--hero-ink);text-decoration:none;font-weight:600;overflow-wrap:anywhere}
+.contact .links small{display:block;color:var(--hero-muted);font-weight:400}
+@media (max-width:760px){.contact{grid-template-columns:1fr;padding:28px 20px}}
+footer{padding:36px 0 48px;color:var(--muted);font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#"><img src="images/logo.png" alt="">AI Vision OS</a>
+    <nav>
+      <a class="hide-sm" href="#features"><span data-l="vi">Tính năng</span><span data-l="en">Features</span></a>
+      <a class="hide-sm" href="#tools"><span data-l="vi">Thư viện tool</span><span data-l="en">Tools</span></a>
+      <a class="hide-sm" href="#hardware"><span data-l="vi">Phần cứng</span><span data-l="en">Hardware</span></a>
+      <a href="#contact"><span data-l="vi">Liên hệ</span><span data-l="en">Contact</span></a>
+      <button class="lang" id="lang" type="button" aria-label="Language">EN</button>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>
+      <span data-l="vi">Phần mềm kiểm tra ngoại quan cho dây chuyền sản xuất</span>
+      <span data-l="en">Visual inspection software for production lines</span>
+    </h1>
+    <p class="lead">
+      <span data-l="vi">Kéo‑thả quy trình kiểm tra, không cần viết code. Camera, PLC và AI trong một ứng dụng, chạy trên Windows và NVIDIA Jetson.</span>
+      <span data-l="en">Drag‑and‑drop inspection workflows with no code. Cameras, PLCs and AI in one application, on Windows and NVIDIA Jetson.</span>
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="#contact"><span data-l="vi">Nhận bản dùng thử</span><span data-l="en">Request a trial</span></a>
+      <a class="btn ghost" href="https://github.com/hntan0104/AI-Vision-OS">GitHub</a>
+    </div>
+    <div class="flow" aria-label="Inspection flow">
+      <span>PLC trigger</span><i>→</i>
+      <span data-l="vi">Chụp ảnh</span><span data-l="en">Capture</span><i>→</i>
+      <span data-l="vi">Định vị</span><span data-l="en">Locate</span><i>→</i>
+      <span data-l="vi">Đo / tìm lỗi / AI</span><span data-l="en">Measure / defects / AI</span><i>→</i>
+      <span>OK / NG</span><i>→</i>
+      <span data-l="vi">Trả PLC + lưu dữ liệu</span><span data-l="en">PLC result + data</span>
+    </div>
+    <img class="hero-shot" src="images/recipe-builder.jpg" width="1300" height="731"
+         alt="Recipe Builder: quy trình kiểm tra dạng sơ đồ node">
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="stats">
+    <div><b>126</b><span data-l="vi">tool kiểm tra</span><span data-l="en">inspection tools</span></div>
+    <div><b>4</b><span data-l="vi">trạm trên một máy</span><span data-l="en">stations per PC</span></div>
+    <div><b>5</b><span data-l="vi">dòng PLC hỗ trợ</span><span data-l="en">PLC families</span></div>
+    <div><b>0</b><span data-l="vi">dòng code cần viết</span><span data-l="en">lines of code needed</span></div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <p class="kicker"><span data-l="vi">Tính năng</span><span data-l="en">Features</span></p>
+    <h2><span data-l="vi">Từ camera tới PLC, trong một ứng dụng</span><span data-l="en">From camera to PLC, in one application</span></h2>
+    <p class="sub">
+      <span data-l="vi">Một máy chạy được tới 4 trạm kiểm tra, mỗi trạm có camera và recipe riêng, dùng chung một PLC.</span>
+      <span data-l="en">One PC runs up to 4 inspection stations, each with its own camera and recipe, sharing one PLC.</span>
+    </p>
+    <div class="grid">
+      <div class="card"><h3>Production</h3><p data-l="vi">Ảnh và kết quả OK/NG theo từng trạm, từng shot; thống kê sản lượng, biểu đồ Pareto lỗi.</p><p data-l="en">Image and OK/NG result per station and shot; output statistics, defect Pareto chart.</p></div>
+      <div class="card"><h3>Recipe Builder</h3><p data-l="vi">Sơ đồ node song song hoặc tuần tự, dừng khi NG, tự nối dây, thử trên ảnh hoặc video, quản lý phiên bản recipe.</p><p data-l="en">Parallel or sequential node graphs, stop on NG, auto‑wiring, test on images or video, recipe versioning.</p></div>
+      <div class="card"><h3>AI Center</h3><p data-l="vi">Dataset → Label → Train → AI Teach → Deploy. Gán nhãn bằng Magic Wand (SAM), huấn luyện YOLO detect / segment / classify.</p><p data-l="en">Dataset → Label → Train → AI Teach → Deploy. Magic Wand (SAM) labelling, YOLO detect / segment / classify training.</p></div>
+      <div class="card"><h3>Camera &amp; PLC</h3><p data-l="vi">Live view, exposure / gain; map tín hiệu, thanh ghi, mã lỗi; bật đèn theo từng shot; tự kết nối lại.</p><p data-l="en">Live view, exposure / gain; signal, register and error‑code mapping; per‑shot lighting; auto‑reconnect.</p></div>
+      <div class="card"><h3>Object Count</h3><p data-l="vi">Đếm vật thể bằng AI + tracking: qua đường hoặc trong vùng, vào / ra, gửi số đếm cho PLC.</p><p data-l="en">AI + tracking object counting: line or zone, in / out, counts sent to the PLC.</p></div>
+      <div class="card"><h3>Reports &amp; Admin</h3><p data-l="vi">Lịch sử kiểm tra, SPC (Cpk), xuất CSV; nhật ký thao tác, sao lưu và khôi phục.</p><p data-l="en">Inspection history, SPC (Cpk), CSV export; audit log, backup and restore.</p></div>
+    </div>
+
+    <div class="split" style="margin-top:48px">
+      <div class="txt">
+        <h3><span data-l="vi">AI không cần chuyên gia</span><span data-l="en">AI without the specialists</span></h3>
+        <ul data-l="vi"><li>Gán nhãn polygon bán tự động bằng Magic Wand (SAM)</li><li>Huấn luyện YOLO, theo dõi mAP / precision / recall</li><li>AI Teach: học từ ảnh OK, không cần gán nhãn</li><li>Có GPU NVIDIA thì dùng CUDA, không có thì chạy CPU</li></ul>
+        <ul data-l="en"><li>Semi‑automatic polygon labelling with Magic Wand (SAM)</li><li>YOLO training with mAP / precision / recall</li><li>AI Teach: learn from OK images, no labelling</li><li>CUDA on an NVIDIA GPU, CPU fallback without one</li></ul>
+      </div>
+      <img src="images/ai-labeling.jpg" width="1300" height="731" loading="lazy" alt="AI Center: gán nhãn bằng Magic Wand">
+    </div>
+    <div class="split rev">
+      <div class="txt">
+        <h3><span data-l="vi">Nhiều shot, nhiều đèn</span><span data-l="en">Multiple shots, multiple lights</span></h3>
+        <ul data-l="vi"><li>Mỗi shot một điều kiện chiếu sáng, một chuỗi tool riêng</li><li>Light Fusion ghép nhiều ảnh đèn thành một</li><li>Hiệu chuẩn mm/pixel, servo, stereo 3D</li></ul>
+        <ul data-l="en"><li>Each shot has its own lighting and tool chain</li><li>Light Fusion merges images taken under different lights</li><li>mm/pixel, servo and stereo 3D calibration</li></ul>
+      </div>
+      <img src="images/multishot.jpg" width="1300" height="731" loading="lazy" alt="Recipe Builder: nhiều shot, nhiều đèn">
+    </div>
+    <div class="split">
+      <div class="txt">
+        <h3><span data-l="vi">4 trạm, một PLC</span><span data-l="en">4 stations, one PLC</span></h3>
+        <ul data-l="vi"><li>Mỗi trạm một camera, một recipe, một dải địa chỉ</li><li>Cả dây chuyền trên một canvas</li><li>Chế độ bảo trì, tự kết nối lại</li></ul>
+        <ul data-l="en"><li>Each station has its own camera, recipe and address range</li><li>The whole line on one canvas</li><li>Maintenance mode, auto‑reconnect</li></ul>
+      </div>
+      <img src="images/plc-stations.jpg" width="1300" height="731" loading="lazy" alt="PLC Setup: 4 trạm dùng chung một PLC">
+    </div>
+  </div>
+</section>
+
+<section id="tools" style="padding-top:24px">
+  <div class="wrap">
+    <p class="kicker"><span data-l="vi">Thư viện tool</span><span data-l="en">Tool library</span></p>
+    <h2><span data-l="vi">126 tool cho mọi bước kiểm tra</span><span data-l="en">126 tools for every inspection step</span></h2>
+    <p class="sub"><span data-l="vi">Kéo tool vào sơ đồ, nối dây, chỉnh ngưỡng và chạy thử ngay trên ảnh.</span><span data-l="en">Drag a tool into the graph, wire it, set thresholds and test on an image right away.</span></p>
+    <table>
+      <tr><th>AI (9)</th><td>AI Detect, AI Segment, AI Classify, AI Anomaly, AI Heat Map, AI Search, AI Count, AI Piece Count, AI Font (OCR)</td></tr>
+      <tr><th><span data-l="vi">Đo lường</span><span data-l="en">Measurement</span> (14)</th><td>Caliper, Outer Size, Edge Gap, Gap, Gap Profile, Measure Angle, Corner Angle, Hex Angle, Lug Position, Area Check, Blob Area, Blob Stats…</td></tr>
+      <tr><th>Edge / Profile (10)</th><td>Edge Position, Edge Width, Edge Pitch, Edge Pairs, Edge Angle, Profile Position, Profile Width, Profile Peak, Peak Width, Profile Defect</td></tr>
+      <tr><th><span data-l="vi">Tìm lỗi</span><span data-l="en">Defect</span> (18)</th><td>Surface Defect, Contour Defect, Compare Master, Crack Tracer, Edge Integrity, Hole Check, Pin Alignment, Assembly Check, Print Verify, Reflection Check, Texture Check, Dent Detector…</td></tr>
+      <tr><th><span data-l="vi">Định vị</span><span data-l="en">Positioning</span> (7)</th><td>Find Pattern, Find Shape, Find Contour, Track Pattern, Align Position</td></tr>
+      <tr><th><span data-l="vi">Màu / Mã / OCR</span><span data-l="en">Color / Code / OCR</span> (7)</th><td>Color Check, Color Defect, Color Groups, Read Barcode, Read 2D Code (QR, DataMatrix), Read Text</td></tr>
+      <tr><th>3D (4)</th><td>3D Flatness, 3D Bumps, 3D Compare, Plate Pose</td></tr>
+      <tr><th>Blob / Threshold (10)</th><td>Blobs, Threshold, Auto Threshold, Dual Threshold, Morphology, Drop Specks, Fill Holes, Skeleton, Top‑Hat</td></tr>
+      <tr><th><span data-l="vi">Tiền xử lý</span><span data-l="en">Preprocessing</span> (26)</th><td>Exposure, Filter, Restoration, Light Fusion, Features, Brightness, ROI Box, Grab / Open Image</td></tr>
+      <tr><th><span data-l="vi">Logic / Luồng</span><span data-l="en">Logic / Flow</span> (20)</th><td>Judge, Zone Judge, Defect Classifier, Calculate, Trend Watch, Final Verdict, Branch, Switch / Case, Loop, Parallel, Wait, Stop</td></tr>
+      <tr><th>Output (1)</th><td>Save Image</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="hardware" style="padding-top:24px">
+  <div class="wrap">
+    <p class="kicker"><span data-l="vi">Phần cứng</span><span data-l="en">Hardware</span></p>
+    <h2><span data-l="vi">Kết nối thiết bị có sẵn trong nhà máy</span><span data-l="en">Works with the equipment you already have</span></h2>
+    <p class="sub"><span data-l="vi">Mỗi máy dùng một key gắn với Machine ID. Key không hết hạn, vẫn dùng được khi thay ổ đĩa hoặc cài lại hệ điều hành.</span><span data-l="en">Each PC uses one key tied to its Machine ID. Keys never expire and survive a drive replacement or OS reinstall.</span></p>
+    <table>
+      <tr><th>Camera</th><td>Basler (USB3 / GigE), FLIR / Teledyne, USB / UVC, <span data-l="vi">thư mục ảnh (camera ảo)</span><span data-l="en">image folder (virtual camera)</span></td></tr>
+      <tr><th>PLC</th><td>KEYENCE KV‑8000 (Host Link), Panasonic FP7 (MEWTOCOL), Mitsubishi (MC protocol), Omron (FINS), Modbus TCP</td></tr>
+      <tr><th><span data-l="vi">Máy tính</span><span data-l="en">Computer</span></th><td>Windows 10/11 x64 · NVIDIA Jetson Orin (JetPack 6) · <span data-l="vi">GPU NVIDIA CUDA (không bắt buộc)</span><span data-l="en">NVIDIA CUDA GPU (optional)</span></td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="contact" style="padding-top:24px">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <h2><span data-l="vi">Dùng thử AI Vision OS</span><span data-l="en">Try AI Vision OS</span></h2>
+        <p><span data-l="vi">Liên hệ để nhận bộ cài đặt, bản dùng thử, mã nguồn hoặc báo giá.</span><span data-l="en">Get in touch for the installer, a trial, the source code or a quote.</span></p>
+      </div>
+      <div class="links">
+        <a href="mailto:hntan0104@gmail.com?subject=AI%20Vision%20OS"><span>✉</span><span>hntan0104@gmail.com<small>Email</small></span></a>
+        <a href="tel:+84822222979"><span>☎</span><span>+84 822 222 979<small data-l="vi">Điện thoại</small><small data-l="en">Phone</small></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 hntan0104 · <span data-l="vi">Phần mềm độc quyền, bảo lưu mọi quyền.</span><span data-l="en">Proprietary software, all rights reserved.</span></footer>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('lang');
+  function set(l){root.lang=l;btn.textContent=l==='vi'?'EN':'VI';try{localStorage.setItem('aivos-lang',l)}catch(e){}}
+  var saved=null;try{saved=localStorage.getItem('aivos-lang')}catch(e){}
+  var q=new URLSearchParams(location.search).get('lang');
+  set(q==='en'||q==='vi'?q:(saved||((navigator.language||'vi').toLowerCase().indexOf('vi')===0?'vi':'en')));
+  btn.addEventListener('click',function(){set(root.lang==='vi'?'en':'vi')});
+})();
+</script>
+</body>
+</html>
