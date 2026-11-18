@@ -104,4 +104,4 @@ For the installer, trial, source code, quote:
 
 ---
 
-<sub>© 2026 hntan0104. Proprietary software, all rights reserved. This repository holds introductory material only, not source code or installers.</sub>
+<sub>© 2026 hntan0104. Proprietary software, all rights reserved.</sub>
