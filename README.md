@@ -97,11 +97,12 @@ Ngoài ra:
 
 ## Liên hệ
 
-Để nhận bộ cài đặt, dùng thử hoặc báo giá:
+Để nhận bộ cài đặt, dùng thử, source code hoặc báo giá:
 
 > Gmail: hntan0104@gmail.com
-> Phone: +84822222979 
+> Phone: +84822222979
+> 
 
 ---
 
-<sub>© 2026 hntan0104. Phần mềm độc quyền, bảo lưu mọi quyền. Repo này chỉ chứa tài liệu giới thiệu, không chứa mã nguồn hay bộ cài đặt.</sub>
+<sub>© 2026 hntan0104. Phần mềm độc quyền, bảo lưu mọi quyền.</sub>
