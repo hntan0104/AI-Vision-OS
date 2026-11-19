@@ -21,7 +21,7 @@
 
 ---
 
-AI Vision OS giúp kỹ sư dựng **recipe kiểm tra** cho từng sản phẩm bằng cách kéo‑thả
+AI Vision OS giúp người dùng dựng **recipe kiểm tra** cho từng sản phẩm bằng cách kéo‑thả
 các tool thành sơ đồ, **không cần viết code**:
 
 ```
@@ -42,14 +42,12 @@ chung một PLC.
 | **PLC** | Kết nối, map tín hiệu / thanh ghi / mã lỗi, điều khiển đèn chiếu sáng theo từng shot, chế độ bảo trì, tự kết nối lại. |
 | **AI Center** | Quy trình 5 bước **Dataset → Label → Train → AI Teach → Deploy**: gán nhãn bán tự động bằng *Magic Wand* (SAM), huấn luyện YOLO (detect / segment / classify), fine‑tune, AI Teach không cần gán nhãn. |
 | **Object Count** | Đếm vật thể bằng AI + tracking: đếm qua đường hoặc trong vùng, đếm vào / ra, gửi số đếm cho PLC, xuất CSV / JSON / báo cáo. |
-| **Reports** | Lịch sử kiểm tra, Pareto lỗi, SPC (Cpk), xuất CSV. |
-| **Admin** | Nhật ký thao tác (audit log), sao lưu và khôi phục. |
 
 Ngoài ra:
 - **Hướng dẫn sử dụng tiếng Việt** tích hợp sẵn trong ứng dụng, có bản PDF / DOCX.
-- **Hiệu chuẩn:** tỉ lệ mm/pixel, hiệu chuẩn theo đường, servo, stereo (đo tư thế 3D).
-- **AI chạy được không cần GPU:** có GPU NVIDIA thì dùng CUDA, không có thì tự chạy bằng CPU.
+- **Hiệu chuẩn:** tỉ lệ mm/pixel
 - **Một recipe dùng chung cho Windows và Linux.**
+- ** Có 
 
 <table>
 <tr>
@@ -85,23 +83,22 @@ Ngoài ra:
 
 ## Hiệu năng thực tế
 
-Số đo trên một dây chuyền đang chạy, tháng 9–10/2026: 4 trạm, mỗi mặt sản phẩm chụp 2 ảnh (đèn sáng và đèn tối).
-Máy: Dell Precision 7680, NVIDIA RTX 2000 Ada Laptop GPU 8 GB. Camera: 4 × Basler acA3800‑14uc (10 MP, USB3). PLC: Panasonic FP7.
+Số đo thực tế: 4 trạm, mỗi mặt sản phẩm chụp 2 ảnh (đèn sáng và đèn tối).
+NVIDIA RTX 2000 Ada GPU 8 GB. Camera: 4 × Basler acA3800‑14uc (10 MP, USB3). PLC: Panasonic FP7.
 
 | Chỉ số | Kết quả |
 |---|---|
 | Trigger → Ready cho một mặt (gồm 2 lần chụp và toàn bộ tool) | **~400 ms** |
 | Bàn xoay được sau Trigger (Busy bật ngay khi chụp xong) | **~230 ms** |
-| Chạy toàn bộ tool của một mặt (trong lúc bàn xoay) | **~95 ms** |
+| Chạy toàn bộ tool của một lần chụp | **~95 ms** |
 | Một ảnh qua AI YOLO segment, đầu cuối, trên GPU | **~12 ms** |
-| Mạng YOLOv8n‑seg: 1 ảnh / 4 ảnh (CUDA graph) | 2.0 ms / 6.8 ms (trước đó 28.4 ms cho 1 ảnh) |
-| AI sau khi line nghỉ 12–30 s | 26–28 ms (không còn chậm ~0,9 s do GPU ngủ) |
-| Chụp 1 ảnh 1918×1372 / full 3840×2748 | ~58 ms / 112–122 ms |
-| Find Shape / Compare Master | ~14 ms / 11.4 ms |
+| Mạng YOLOv8n‑seg: 1 ảnh / 4 ảnh (CUDA graph) | 2.0 ms  |
+| Chụp 1 ảnh 1918×1372 / full 3840×2748 | ~58 ms |
+| Find Shape / Compare Master | ~14 ms |
 | Một lệnh PLC (FP7, Ethernet) | ~4.6 ms |
-| Lưu ảnh 10 MP PNG | ~320 ms, chạy nền: 0 ms trên chu kỳ |
+| Lưu ảnh 10 MP PNG | chạy nền: 0 ms trên chu kỳ |
 
-Thời gian thực tế phụ thuộc camera, độ phân giải và số tool trong recipe. Cách tốt nhất là chạy thử trên ảnh sản phẩm của bạn.
+Thời gian thực tế phụ thuộc camera, độ phân giải và số tool trong recipe.
 
 ## Xử lý các trường hợp khó
 
@@ -135,9 +132,9 @@ Những lỗi mà ngưỡng sáng tối thông thường bỏ sót. Các tool n�
 | | Tối thiểu | Khuyến nghị |
 |---|---|---|
 | Hệ điều hành | Windows 10, 64‑bit | Windows 11, 64‑bit |
-| CPU | 4 nhân (Intel Core i5 thế hệ 10 hoặc tương đương) | 8 nhân trở lên (Core i7 / i9) |
+| CPU | 4 nhân (Intel Core i5 thế hệ 10 hoặc tương đương) | 8 nhân trở lên |
 | RAM | 16 GB | 32 GB (huấn luyện AI, chạy 4 trạm) |
-| GPU | Không bắt buộc: AI chạy bằng CPU, chậm hơn | NVIDIA RTX, 8 GB VRAM |
+| GPU | Không bắt buộc: AI chạy bằng CPU | NVIDIA RTX, 8 GB VRAM |
 | Ổ đĩa | SSD, trống 15 GB cho phần mềm | SSD 512 GB trở lên để lưu ảnh |
 | Cổng camera | 1 cổng USB3 hoặc GigE cho mỗi camera | Card USB3 / GigE riêng cho mỗi camera |
 | Kết nối PLC | Ethernet | Cổng Ethernet riêng cho PLC |
